@@ -1,0 +1,11 @@
+build/
+dist/
+.pytest_cache/**
+.eggs/**
+*.egg-info/**
+**/.pytest_cache/**
+**/__pycache__/**
+fmfexporter.log
+.idea
+**/.pyc
+venv

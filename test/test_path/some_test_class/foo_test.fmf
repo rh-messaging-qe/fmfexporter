@@ -1,0 +1,86 @@
+/TestFoo:
+  /test_foo_sample_01:
+      summary: This is the summary
+      description: This is the description
+      authors:
+        - Fernando Giorgetti <fgiorget@redhat.com>
+      approvals:
+        - Fernando Giorgetti <fgiorget@redhat.com>
+        - Dominik Lenoch <dlenoch@redhat.com>
+      tags:
+        - TAG1
+      components:
+        - router
+      subcomponents:
+        - Core_Engine
+      level: component
+      importance: critical
+      type: functional
+      subtypes:
+       - compliance
+       - '-'
+      defects:
+        - ENTMQIC-1111
+        - ENTMQIC-2222
+      requirements:
+        - ENTMQIC-3333
+        - ENTMQIC-4444
+      customer-scenarios:
+        - ENTMQIC-5555
+        - ENTMQIC-6666
+      test-steps:
+        - step: Step 1
+          expected: Expected 1
+        - step: Step 2
+          expected: Expected 2
+      parameters:
+          - router
+          - broker
+          - client
+      testsuite+:
+        parameters:
+          - polarion-project-id: ENTMQIC
+          - polarion-lookup-method: name
+
+  /test_foo_sample_02:
+      summary: This is the summary
+      description: This is the description
+      authors:
+        - Fernando Giorgetti <fgiorget@redhat.com>
+      approvals:
+        - Fernando Giorgetti <fgiorget@redhat.com>
+        - Dominik Lenoch <dlenoch@redhat.com>
+      tags:
+        - TAG1
+      components:
+        - router
+      subcomponents:
+        - Core_Engine
+      level: component
+      importance: critical
+      type: functional
+      subtypes:
+       - compliance
+       - '-'
+      defects:
+        - ENTMQIC-1111
+        - ENTMQIC-2222
+      requirements:
+        - ENTMQIC-3333
+        - ENTMQIC-4444
+      customer-scenarios:
+        - ENTMQIC-5555
+        - ENTMQIC-6666
+      test-steps:
+        - step: Step 1
+          expected: Expected 1
+        - step: Step 2
+          expected: Expected 2
+      parameters:
+          - router
+          - broker
+          - client
+      testsuite+:
+        parameters:
+          - polarion-project-id: ENTMQIC
+          - polarion-lookup-method: name
