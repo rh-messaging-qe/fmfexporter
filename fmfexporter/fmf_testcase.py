@@ -1,8 +1,50 @@
+from typing import Union, List
+
 from fmf import Tree
 
 """
 Provides FMF TestCase related classes.
 """
+
+
+class FMFTestSuite(dict):
+    """
+    Dictionary with properties to access currently supported (and documented) keys.
+    """
+    def __init__(self, *args, **kwargs):
+        super(FMFTestSuite, self).__init__(*args, **kwargs)
+
+    @property
+    def parameters(self) -> list:
+        return self.get('parameters', [])
+
+    @property
+    def properties(self) -> dict:
+        return self.get('properties', {})
+
+    @property
+    def compatible_topologies(self) -> list:
+        return self.get('compatible_topologies', [])
+
+
+class FMFTestCaseRelationship(dict):
+    """
+    Dictionary with properties exposing currently supported (and documented) keys.
+    """
+    def __init__(self, *args, **kwargs):
+        super(FMFTestCaseRelationship, self).__init__(*args, **kwargs)
+
+    @property
+    def jira(self) -> str:
+        return self.get('jira', '')
+
+    @property
+    def bugzilla(self) -> str:
+        return self.get('bugzilla', '')
+
+    @property
+    def customer_case(self) -> bool:
+        return self.get('customer_case', self.get('customer-case', False))
 
 
 class FMFTestCase(object):
@@ -13,55 +55,42 @@ class FMFTestCase(object):
     def __init__(self):
 
         # TC Identification
-        self.name = ""
-        self.summary = ""
-        self.description = ""
-        self.tags = []
+        self.name: str = ""
+        self.summary: str = ""
+        self.description: str = ""
+        self.tags: list = []
 
         # Authoring and approvals
-        self.authors = []
-        self.approvals = []
+        self.authors: list = []
+        self.approvals: list = []
 
         # Classification
-        self.type = ""
-        self.subtype = ""
-        self.subtypes = []
-        self.level = ""
+        self.type: str = ""
+        self.subtypes: list = []
+        self.level: str = ""
 
         # Components
-        self.components = []
-        self.subcomponents = []
+        self.components: Union[list, str] = ""
+        self.sub_components: Union[list, str] = ""
 
         # Importance / priority
-        self.importance = ""
+        self.importance: str = ""
 
         # Relationships
-        self.defects = []
-        self.requirements = []
-        self.customer_scenarios = []
+        self.defects: List[FMFTestCaseRelationship] = []
+        self.requirements: List[FMFTestCaseRelationship] = []
 
         # Steps
         self.test_steps = []
 
-        # Test Case and Test suite parameters
+        # Test Case parameters
         self.parameters = []
-        self.testsuite_parameters = []
 
-    def get_testsuite_parameter(self, name, _default=''):
-        """
-        Returns a parameter from the testsuite_parameters.
-        TODO it currently holds a list of single dictionaries. We should evaluate adding such parameters to another field
-        :param name:
-        :param _default:
-        :return:
-        """
-        for param in self.testsuite_parameters:
-            if not isinstance(param, dict):
-                continue
-            for key, value in param.items():
-                if key == name:
-                    return value
-        return _default
+        # Test suite
+        self.testsuite: FMFTestSuite = FMFTestSuite()
+
+        # Adapter
+        self.adapter: dict = {}
 
     @staticmethod
     def from_fmf_testcase_node(fmf_node: Tree):
@@ -98,22 +127,19 @@ class FMFTestCase(object):
 
             # Classification
             fmf_tc.type = get_fmf_data(fmf_node, 'type', '')
-            fmf_tc.subtype = get_fmf_data(fmf_node, 'subtype', '')
             fmf_tc.subtypes = get_fmf_data(fmf_node, 'subtypes', [])
-
             fmf_tc.level = get_fmf_data(fmf_node, 'level', '')
 
             # Components
-            fmf_tc.components = get_fmf_data(fmf_node, 'components', [])
-            fmf_tc.subcomponents = get_fmf_data(fmf_node, 'subcomponents', [])
+            fmf_tc.components = get_fmf_data(fmf_node, 'components', '')
+            fmf_tc.sub_components = get_fmf_data(fmf_node, 'subcomponents', '')
 
             # Importance / priority
             fmf_tc.importance = get_fmf_data(fmf_node, 'importance', '')
 
             # Relationships
-            fmf_tc.defects = get_fmf_data(fmf_node, 'defects', [])
-            fmf_tc.requirements = get_fmf_data(fmf_node, 'requirements', [])
-            fmf_tc.customer_scenarios = get_fmf_data(fmf_node, 'customer-scenarios', [])
+            fmf_tc.defects = [FMFTestCaseRelationship(defect) for defect in get_fmf_data(fmf_node, 'defects', [])]
+            fmf_tc.requirements = [FMFTestCaseRelationship(req) for req in get_fmf_data(fmf_node, 'requirements', [])]
 
             # Steps
             fmf_tc.test_steps = get_fmf_data(fmf_node, 'test-steps', [])
@@ -122,8 +148,11 @@ class FMFTestCase(object):
             fmf_tc.parameters = get_fmf_data(fmf_node, 'parameters', [])
 
             # Test Suite parameters
-            ts = get_fmf_data(fmf_node, 'testsuite', [])
-            fmf_tc.testsuite_parameters = ts['parameters'] if 'parameters' in ts else []
+            ts = get_fmf_data(fmf_node, 'testsuite', {})
+            fmf_tc.testsuite = FMFTestSuite(**ts)
+
+            # Adapter specific info
+            fmf_tc.adapter = get_fmf_data(fmf_node, 'adapter', {})
 
             return fmf_tc
         except Exception as e:

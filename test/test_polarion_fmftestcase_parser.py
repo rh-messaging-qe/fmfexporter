@@ -53,8 +53,8 @@ def test_polarion_fmftestcase_parser_relationship(testcase):
     :param testcase:
     :return:
     """
-    verify_list = ['ENTMQIC-1111', 'ENTMQIC-2222', 'ENTMQIC-3333',
-                   'ENTMQIC-4444', 'ENTMQIC-5555', 'ENTMQIC-6666']
+    verify_list = [{'jira': 'ENTMQIC-1111', 'customer-case': True}, {'jira': 'ENTMQIC-2222'},
+                   {'jira': 'ENTMQIC-3333', 'customer-case': True}, {'jira': 'ENTMQIC-4444'}]
 
     assert all(item in testcase.verifies for item in verify_list)
     assert len(verify_list) == len(testcase.verifies)
@@ -67,6 +67,7 @@ def test_polarion_fmftestcase_parser_components(testcase):
     :return:
     """
     assert testcase.component == 'router'
+    assert testcase.sub_component == 'Core_Engine'
 
 
 def test_polarion_fmftestcase_parser_level_and_type(testcase):
@@ -77,8 +78,6 @@ def test_polarion_fmftestcase_parser_level_and_type(testcase):
     """
     assert testcase.level == 'component'
     assert testcase.type == 'functional'
-    assert testcase.subtype1 == 'compliance'
-    assert testcase.subtype2 == '-'
 
 
 def test_polarion_fmftestcase_parser_importance(testcase):
@@ -118,5 +117,5 @@ def test_polarion_fmftestcase_parser_custom_parameters(testcase):
     assert testcase.positive == 'positive'
     assert testcase.automated == 'automated'
     assert testcase.lookup_method == 'name'
-
-
+    assert testcase.subtype1 == 'compliance'
+    assert testcase.subtype2 == '-'

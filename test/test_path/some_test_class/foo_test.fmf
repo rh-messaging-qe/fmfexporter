@@ -16,18 +16,14 @@
       level: component
       importance: critical
       type: functional
-      subtypes:
-       - compliance
-       - '-'
       defects:
-        - ENTMQIC-1111
-        - ENTMQIC-2222
+        - jira: ENTMQIC-1111
+          customer-case: true
+        - jira: ENTMQIC-2222
       requirements:
-        - ENTMQIC-3333
-        - ENTMQIC-4444
-      customer-scenarios:
-        - ENTMQIC-5555
-        - ENTMQIC-6666
+        - jira: ENTMQIC-3333
+          customer-case: true
+        - jira: ENTMQIC-4444
       test-steps:
         - step: Step 1
           expected: Expected 1
@@ -39,8 +35,21 @@
           - client
       testsuite+:
         parameters:
-          - polarion-project-id: ENTMQIC
-          - polarion-lookup-method: name
+          - PARAM1
+          - PARAM2
+        properties:
+          property1: value1
+          property2: value2
+      adapter:
+        polarion:
+          project: ENTMQIC
+          lookup-method: name
+          automated: true
+          positive: true
+          subtypes:
+            - compliance
+            - '-'
+
 
   /test_foo_sample_02:
       summary: This is the summary
@@ -51,26 +60,21 @@
         - Fernando Giorgetti <fgiorget@redhat.com>
         - Dominik Lenoch <dlenoch@redhat.com>
       tags:
-        - TAG1
-      components:
-        - router
+        - TAG2
+      components: router
       subcomponents:
         - Core_Engine
       level: component
       importance: critical
       type: functional
-      subtypes:
-       - compliance
-       - '-'
       defects:
-        - ENTMQIC-1111
-        - ENTMQIC-2222
+        - jira: ENTMQIC-1111
+          customer-case: true
+        - jira: ENTMQIC-2222
       requirements:
-        - ENTMQIC-3333
-        - ENTMQIC-4444
-      customer-scenarios:
-        - ENTMQIC-5555
-        - ENTMQIC-6666
+        - jira: ENTMQIC-3333
+          customer-case: true
+        - jira: ENTMQIC-4444
       test-steps:
         - step: Step 1
           expected: Expected 1
@@ -82,5 +86,16 @@
           - client
       testsuite+:
         parameters:
-          - polarion-project-id: ENTMQIC
-          - polarion-lookup-method: name
+          - PARAM1
+          - PARAM2
+        properties:
+          property1: value1
+          property2: value2
+      adapter:
+        polarion:
+          project: ENTMQIC
+          lookup-method: name
+          positive: true
+          subtypes:
+            - compliance
+            - '-'

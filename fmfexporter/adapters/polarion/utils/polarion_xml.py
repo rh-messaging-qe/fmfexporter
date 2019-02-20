@@ -14,11 +14,11 @@ class PolarionXmlUtils(object):
     """
 
     @staticmethod
-    def new_linked_verifies(linked_work_item_parent: etree.Element, workitem_id: str) -> None:
+    def new_linked_work_item(linked_work_item_parent: etree.Element, workitem_id: str,
+                            role_id: str = 'verifies') -> None:
         """
         Creates sub-element named 'linked-work-item' within the given 'linked-work-items' parent.
         It will also set the 'workitem-id' property using the id value provided.
-        TODO Generalize and use dictionary
         :param linked_work_item_parent:
         :param workitem_id:
         :return:
@@ -28,7 +28,7 @@ class PolarionXmlUtils(object):
         sub_elem = etree.SubElement(linked_work_item_parent, 'linked-work-item')
         sub_elem.set('workitem-id', workitem_id)
         sub_elem.set('lookup-method', 'id')
-        sub_elem.set('role-id', 'verifies')
+        sub_elem.set('role-id', role_id)
 
     @staticmethod
     def new_custom_field(custom_fields_parent: etree.Element, id_field: str, content: str) -> None:
