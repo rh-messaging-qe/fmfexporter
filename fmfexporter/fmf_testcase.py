@@ -24,7 +24,7 @@ class FMFTestSuite(dict):
 
     @property
     def compatible_topologies(self) -> list:
-        return self.get('compatible-topologies', [])
+        return self.get('compatible_topologies', self.get('compatible-topologies', []))
 
 
 class FMFTestCaseRelationship(dict):
@@ -44,7 +44,7 @@ class FMFTestCaseRelationship(dict):
 
     @property
     def customer_case(self) -> bool:
-        return self.get('customer-case', False)
+        return self.get('customer_case', self.get('customer-case', False))
 
 
 class FMFTestCase(object):
