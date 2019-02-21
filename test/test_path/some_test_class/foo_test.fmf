@@ -15,13 +15,14 @@
         - Core_Engine
       level: component
       importance: critical
+      estimate: 40h
       type: functional
       defects:
-        - jira: ENTMQIC-1111
+        - polarion: ENTMQIC-1111
           customer-case: true
         - jira: ENTMQIC-2222
       requirements:
-        - jira: ENTMQIC-3333
+        - polarion: ENTMQIC-3333
           customer-case: true
         - jira: ENTMQIC-4444
       test-steps:
@@ -40,6 +41,9 @@
         properties:
           property1: value1
           property2: value2
+        compatible-topologies:
+          - TOPO1
+          - TOPO2
       adapter:
         polarion:
           project: ENTMQIC
@@ -68,11 +72,11 @@
       importance: critical
       type: functional
       defects:
-        - jira: ENTMQIC-1111
+        - polarion: ENTMQIC-1111
           customer-case: true
         - jira: ENTMQIC-2222
       requirements:
-        - jira: ENTMQIC-3333
+        - polarion: ENTMQIC-3333
           customer-case: true
         - jira: ENTMQIC-4444
       test-steps:

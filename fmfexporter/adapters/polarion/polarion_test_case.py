@@ -216,7 +216,9 @@ class PolarionTestCase(object):
         if self.verifies:
             tc_linked = etree.SubElement(tc, 'linked-work-items')
             for verify in [verify for verify in self.verifies if isinstance(verify, dict)]:
-                PolarionXmlUtils.new_linked_work_item(tc_linked, verify.get('jira', ''), 'verifies')
+                PolarionXmlUtils.new_linked_work_item(tc_linked,
+                                                      verify.get('polarion', verify.get('jira', '')),
+                                                      'verifies')
 
         # testcase/test-steps
         if self.steps:

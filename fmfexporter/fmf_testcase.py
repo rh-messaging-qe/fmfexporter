@@ -24,7 +24,7 @@ class FMFTestSuite(dict):
 
     @property
     def compatible_topologies(self) -> list:
-        return self.get('compatible_topologies', [])
+        return self.get('compatible-topologies', [])
 
 
 class FMFTestCaseRelationship(dict):
@@ -44,7 +44,7 @@ class FMFTestCaseRelationship(dict):
 
     @property
     def customer_case(self) -> bool:
-        return self.get('customer_case', self.get('customer-case', False))
+        return self.get('customer-case', False)
 
 
 class FMFTestCase(object):
@@ -75,6 +75,7 @@ class FMFTestCase(object):
 
         # Importance / priority
         self.importance: str = ""
+        self.estimate: str = ""
 
         # Relationships
         self.defects: List[FMFTestCaseRelationship] = []
@@ -136,6 +137,7 @@ class FMFTestCase(object):
 
             # Importance / priority
             fmf_tc.importance = get_fmf_data(fmf_node, 'importance', '')
+            fmf_tc.estimate = get_fmf_data(fmf_node, 'estimate', '')
 
             # Relationships
             fmf_tc.defects = [FMFTestCaseRelationship(defect) for defect in get_fmf_data(fmf_node, 'defects', [])]
@@ -156,4 +158,5 @@ class FMFTestCase(object):
 
             return fmf_tc
         except Exception as e:
-            return None
+            print("Unable to parse FMF test case: %s" % str(e))
+            raise e

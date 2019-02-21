@@ -61,13 +61,14 @@ def test_fmftestcase_parser_test_component(testcase):
     assert len(testcase.sub_components) == 1
 
 
-def test_fmftestcase_parser_test_importance(testcase):
+def test_fmftestcase_parser_test_priorities(testcase):
     """
-    Asserts the FMF test case importance element is properly parsed from YAML
+    Asserts the FMF test case priority related elements are properly parsed from YAML
     :param testcase:
     :return:
     """
     assert testcase.importance == "critical"
+    assert testcase.estimate == "40h"
 
 
 def test_fmftestcase_parser_test_level_type(testcase):
@@ -86,12 +87,12 @@ def test_fmftestcase_parser_test_relationships(testcase):
     :param testcase:
     :return:
     """
-    defects = [{'jira': 'ENTMQIC-1111', 'customer-case': True}, {'jira': 'ENTMQIC-2222'}]
+    defects = [{'polarion': 'ENTMQIC-1111', 'customer-case': True}, {'jira': 'ENTMQIC-2222'}]
     assert defects[0] in testcase.defects
     assert defects[1] in testcase.defects
     assert len(testcase.defects) == 2
 
-    requirements = [{'jira': 'ENTMQIC-3333', 'customer-case': True}, {'jira': 'ENTMQIC-4444'}]
+    requirements = [{'polarion': 'ENTMQIC-3333', 'customer-case': True}, {'jira': 'ENTMQIC-4444'}]
     assert requirements[0] in testcase.requirements
     assert requirements[1] in testcase.requirements
     assert len(testcase.requirements) == 2
@@ -111,12 +112,6 @@ def test_fmftestcase_parser_test_steps(testcase: FMFTestCase):
     assert exp_steps[0] in testcase.test_steps
     assert exp_steps[1] in testcase.test_steps
     assert len(testcase.test_steps) == 2
-
-    # cur_step = 0
-    # for step_item in exp_steps:
-    #     assert testcase.test_steps[cur_step]["step"] == step_item["step"]
-    #     assert testcase.test_steps[cur_step]["expected"] == step_item["expected"]
-    #     cur_step += 1
 
 
 def test_fmftestcase_parser_test_parameters(testcase):
@@ -142,6 +137,8 @@ def test_fmftestcase_parser_test_testsuite(testcase: FMFTestCase):
         'property1': 'value1',
         'property2': 'value2'
     }
+    exp_topologies = ['TOPO1', 'TOPO2']
 
     assert exp_parameters == testcase.testsuite.parameters
     assert exp_properties == testcase.testsuite.properties
+    assert exp_topologies == testcase.testsuite.compatible_topologies
