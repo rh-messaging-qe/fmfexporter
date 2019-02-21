@@ -4,6 +4,7 @@ sending them to the Polarion Importer.
 """
 
 import xml.etree.ElementTree as etree
+from typing import List
 
 
 class PolarionXmlUtils(object):
@@ -75,6 +76,25 @@ class PolarionXmlUtils(object):
         result_elem = etree.SubElement(test_step, 'test-step-column')
         result_elem.set('id', 'expectedResult')
         result_elem.text = result
+
+    @staticmethod
+    def new_test_step_params(test_steps_parent: etree.Element, params: List[str], scope: str="local") -> None:
+        if params is None:
+            return
+
+        # The test-step that holds all test parameters
+        test_step = etree.SubElement(test_steps_parent, 'test-step')
+
+        # Step element
+        step_elem = etree.SubElement(test_step, 'test-step-column', id='step')
+        step_elem.text = 'Parameters: '
+        for (idx, param) in enumerate(params):
+            param_elem = etree.Element("parameter", name=param, scope=scope)
+            if idx > 0:
+                step_elem.text += ", "
+            step_elem.text += param
+            step_elem.append(param_elem)
+        step_elem.text += " => "
 
     @staticmethod
     def new_property_sub_element(parent: etree.Element, name: str, value: str) -> None:

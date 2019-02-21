@@ -93,6 +93,9 @@ class PolarionTestCase(object):
         # Importance
         tc.importance = fmf_testcase.importance
 
+        # Parameters
+        tc.parameters = fmf_testcase.parameters
+
         # Steps
         for fmf_step in fmf_testcase.test_steps:
             tc.steps.append(PolarionTestCase.Step(fmf_step['step'], fmf_step['expected']))
@@ -157,6 +160,7 @@ class PolarionTestCase(object):
         self.approvals = []
         self.subtype1 = ""
         self.subtype2 = ""
+        self.parameters = []
 
         # TODO future use
         self.tags = ""
@@ -223,6 +227,11 @@ class PolarionTestCase(object):
         # testcase/test-steps
         if self.steps:
             tc_steps = etree.SubElement(tc, 'test-steps')
+
+            # If test case has parameters, add them
+            if self.parameters:
+                PolarionXmlUtils.new_test_step_params(tc_steps, self.parameters)
+
             for step in self.steps:
                 PolarionXmlUtils.new_test_step(tc_steps, step.step, step.result)
 
