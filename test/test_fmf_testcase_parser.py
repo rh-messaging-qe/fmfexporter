@@ -113,12 +113,6 @@ def test_fmftestcase_parser_test_steps(testcase: FMFTestCase):
     assert exp_steps[1] in testcase.test_steps
     assert len(testcase.test_steps) == 2
 
-    # cur_step = 0
-    # for step_item in exp_steps:
-    #     assert testcase.test_steps[cur_step]["step"] == step_item["step"]
-    #     assert testcase.test_steps[cur_step]["expected"] == step_item["expected"]
-    #     cur_step += 1
-
 
 def test_fmftestcase_parser_test_parameters(testcase):
     """

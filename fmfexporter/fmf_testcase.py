@@ -44,7 +44,7 @@ class FMFTestCaseRelationship(dict):
 
     @property
     def customer_case(self) -> bool:
-        return self.get('customer_case', self.get('customer-case', False))
+        return self.get('customer-case', False)
 
 
 class FMFTestCase(object):
