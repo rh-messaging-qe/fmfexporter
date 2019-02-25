@@ -4,6 +4,7 @@ sending them to the Polarion Importer.
 """
 
 import xml.etree.ElementTree as etree
+from typing import List
 
 
 class PolarionXmlUtils(object):
@@ -14,11 +15,11 @@ class PolarionXmlUtils(object):
     """
 
     @staticmethod
-    def new_linked_verifies(linked_work_item_parent: etree.Element, workitem_id: str) -> None:
+    def new_linked_work_item(linked_work_item_parent: etree.Element, workitem_id: str,
+                            role_id: str = 'verifies') -> None:
         """
         Creates sub-element named 'linked-work-item' within the given 'linked-work-items' parent.
         It will also set the 'workitem-id' property using the id value provided.
-        TODO Generalize and use dictionary
         :param linked_work_item_parent:
         :param workitem_id:
         :return:
@@ -28,7 +29,7 @@ class PolarionXmlUtils(object):
         sub_elem = etree.SubElement(linked_work_item_parent, 'linked-work-item')
         sub_elem.set('workitem-id', workitem_id)
         sub_elem.set('lookup-method', 'id')
-        sub_elem.set('role-id', 'verifies')
+        sub_elem.set('role-id', role_id)
 
     @staticmethod
     def new_custom_field(custom_fields_parent: etree.Element, id_field: str, content: str) -> None:
@@ -75,6 +76,25 @@ class PolarionXmlUtils(object):
         result_elem = etree.SubElement(test_step, 'test-step-column')
         result_elem.set('id', 'expectedResult')
         result_elem.text = result
+
+    @staticmethod
+    def new_test_step_params(test_steps_parent: etree.Element, params: List[str], scope: str="local") -> None:
+        if params is None:
+            return
+
+        # The test-step that holds all test parameters
+        test_step = etree.SubElement(test_steps_parent, 'test-step')
+
+        # Step element
+        step_elem = etree.SubElement(test_step, 'test-step-column', id='step')
+        step_elem.text = 'Parameters: '
+        for (idx, param) in enumerate(params):
+            param_elem = etree.Element("parameter", name=param, scope=scope)
+            if idx > 0:
+                step_elem.text += ", "
+            step_elem.text += param
+            step_elem.append(param_elem)
+        step_elem.text += " => "
 
     @staticmethod
     def new_property_sub_element(parent: etree.Element, name: str, value: str) -> None:

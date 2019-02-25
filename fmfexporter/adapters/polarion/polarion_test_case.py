@@ -53,29 +53,48 @@ class PolarionTestCase(object):
                 tc.assignee = re.sub(PolarionTestCase.RE_USER_ID, r'\1', author)
 
         # Set verifies list
-        # TODO Discuss about it
-        tc.verifies = fmf_testcase.requirements + fmf_testcase.defects + fmf_testcase.customer_scenarios
-        # tc.verifies = fmf_testcase.requirements
+        # TODO Discuss with team about it
+        tc.verifies = fmf_testcase.requirements + fmf_testcase.defects
 
-        # TODO Need to discuss how to handle other fields (for now keeping in testsuite_parameters)
-        # TODO Convert testsuite parameters into a single dictionary instead of a list?
-        tc.project = fmf_testcase.get_testsuite_parameter('polarion-project-id')
-        tc.status = ''  # TODO how to handle it?
-        tc.positive = fmf_testcase.get_testsuite_parameter('polarion-testcase-positive', 'positive')
-        tc.automated = fmf_testcase.get_testsuite_parameter('polarion-testcase-automated', 'automated')
-        tc.lookup_method = fmf_testcase.get_testsuite_parameter('polarion-testcase-lookup-method', 'name')
+        # TODO Need to research / discuss how to handle it
+        tc.status = ''
+
+        # Fields expected inside adapater.polarion
+        if fmf_testcase.adapter and 'polarion' in fmf_testcase.adapter:
+            polarion: dict = fmf_testcase.adapter.get('polarion')
+            tc.project = polarion.get('project')
+            tc.positive = 'positive' if polarion.get('positive', False) else 'negative'
+            tc.automated = 'automated' if polarion.get('automated', False) else 'notautomated'
+            tc.lookup_method = polarion.get('lookup-method', 'name')
+            subtypes = polarion.get('subtypes', [])
+            tc.subtype1 = subtypes[0] if len(subtypes) >= 1 else ''
+            tc.subtype2 = subtypes[1] if len(subtypes) >= 2 else ''
 
         # Component
-        tc.component = fmf_testcase.components[0] if fmf_testcase.components else ''
+        tc.component = ''
+        if fmf_testcase.components:
+            if isinstance(fmf_testcase.components, list):
+                tc.component = fmf_testcase.components[0]
+            else:
+                tc.component = fmf_testcase.components
+
+        # Sub Component
+        tc.sub_component = ''
+        if fmf_testcase.sub_components:
+            if isinstance(fmf_testcase.sub_components, list):
+                tc.sub_component = fmf_testcase.sub_components[0]
+            else:
+                tc.sub_component = fmf_testcase.sub_components
 
         # Level and types
         tc.level = fmf_testcase.level
         tc.type = fmf_testcase.type
-        tc.subtype1 = fmf_testcase.subtypes[0] if fmf_testcase.subtypes else ''
-        tc.subtype2 = fmf_testcase.subtypes[1] if fmf_testcase.subtypes and len(fmf_testcase.subtypes) > 1 else ''
 
         # Importance
         tc.importance = fmf_testcase.importance
+
+        # Parameters
+        tc.parameters = fmf_testcase.parameters
 
         # Steps
         for fmf_step in fmf_testcase.test_steps:
@@ -132,26 +151,16 @@ class PolarionTestCase(object):
         self.positive = "positive"
         self.automated = "notautomated"
         self.lookup_method = ""
-
-        # router = Qpid Dispatch Router
-        # currently accepting only: -, comp1, comp2 and router (in devel)
         self.component = ""
-        # functional, non-functional, structural
+        self.sub_component = ""
         self.type = ""
-        # component, integration, system, acceptance
         self.level = ""
-        # low, medium, high, critial
         self.importance = ""
-
         self.steps = []
         self.approvals = []
-
-        # -, compliance, documentation, i18n, installability, interoperability,
-        # performance, reliability, scalability,
-        # security, usability, recovery-failover
-        self.subtype1 = "-"
-        # -, fips, 508, common criteria, whql, user guide, help, load, stress
-        self.subtype2 = "-"
+        self.subtype1 = ""
+        self.subtype2 = ""
+        self.parameters = []
 
         # TODO future use
         self.tags = ""
@@ -191,13 +200,14 @@ class PolarionTestCase(object):
         tc_description.text = PolarionTestCase.DESC_PREFIX_SUFFIX
         if self.description:
             tc_description.text += "<br>"
-            tc_description.text += self.description
+            tc_description.text += self.description.replace('\n', '<br>')
             tc_description.text += "<br>"
             tc_description.text += PolarionTestCase.DESC_PREFIX_SUFFIX
 
         # testcase/custom-fields
         tc_custom = etree.SubElement(tc, 'custom-fields')
         PolarionXmlUtils.new_custom_field(tc_custom, 'casecomponent', self.component)
+        PolarionXmlUtils.new_custom_field(tc_custom, 'subcomponent', self.sub_component)
         PolarionXmlUtils.new_custom_field(tc_custom, 'testtype', self.type)
         PolarionXmlUtils.new_custom_field(tc_custom, 'subtype1', self.subtype1)
         PolarionXmlUtils.new_custom_field(tc_custom, 'subtype2', self.subtype2)
@@ -209,11 +219,19 @@ class PolarionTestCase(object):
         # testcase/linked-work-items
         if self.verifies:
             tc_linked = etree.SubElement(tc, 'linked-work-items')
-            PolarionXmlUtils.new_linked_verifies(tc_linked, self.verifies)
+            for verify in [verify for verify in self.verifies if isinstance(verify, dict)]:
+                PolarionXmlUtils.new_linked_work_item(tc_linked,
+                                                      verify.get('polarion', verify.get('jira', '')),
+                                                      'verifies')
 
         # testcase/test-steps
         if self.steps:
             tc_steps = etree.SubElement(tc, 'test-steps')
+
+            # If test case has parameters, add them
+            if self.parameters:
+                PolarionXmlUtils.new_test_step_params(tc_steps, self.parameters)
+
             for step in self.steps:
                 PolarionXmlUtils.new_test_step(tc_steps, step.step, step.result)
 
