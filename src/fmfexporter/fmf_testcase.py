@@ -96,7 +96,8 @@ class FMFTestCase(object):
     @staticmethod
     def from_fmf_testcase_node(fmf_node: Tree):
         """
-        This method is used to create an instance of an FMFTestCase based on a given node in the FMF Tree.
+        This method is used to create an instance of an FMFTestCase
+        based on a given node in the FMF Tree.
         :param fmf_node:
         :return: FMFTestCase instance
         """
@@ -140,8 +141,13 @@ class FMFTestCase(object):
             fmf_tc.estimate = get_fmf_data(fmf_node, 'estimate', '')
 
             # Relationships
-            fmf_tc.defects = [FMFTestCaseRelationship(defect) for defect in get_fmf_data(fmf_node, 'defects', [])]
-            fmf_tc.requirements = [FMFTestCaseRelationship(req) for req in get_fmf_data(fmf_node, 'requirements', [])]
+            fmf_tc.defects = [
+                    FMFTestCaseRelationship(defect) for defect
+                    in get_fmf_data(fmf_node, 'defects', [])
+            ]
+            fmf_tc.requirements = [
+                    FMFTestCaseRelationship(req) for req
+                    in get_fmf_data(fmf_node, 'requirements', [])]
 
             # Steps
             fmf_tc.test_steps = get_fmf_data(fmf_node, 'test-steps', [])

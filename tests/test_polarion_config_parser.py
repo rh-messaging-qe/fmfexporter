@@ -8,11 +8,10 @@ Test if configuration file needed by Polarion adapter is being properly parsed.
 
 
 @pytest.fixture(scope="module")
-def polarion_config(request):
+def polarion_config():
     """
     Creates a polarion_config fixture based on a pre-populated config file for the
     Polarion adapter.
-    :param request:
     :return:
     """
     return PolarionConfig(os.path.dirname(os.path.abspath(__file__)) + '/fmfexporter.config.ini')
@@ -20,7 +19,7 @@ def polarion_config(request):
 
 def test_polarion_config_parser(polarion_config):
     """
-    Asserts that the polarion adapater configuration keys and values have been parsed correctly.
+    Asserts that the polarion adapter configuration keys and values have been parsed correctly.
     :param polarion_config:
     :return:
     """
