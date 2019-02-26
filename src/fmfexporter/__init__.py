@@ -1,2 +1,4 @@
-from fmfexporter.fmf_testcase import FMFTestCase  # noqa
-from fmfexporter.fmf_adapter import FMFAdapter  # noqa
+from fmfexporter.fmf_testcase import FMFTestCase
+from fmfexporter.fmf_adapter import FMFAdapter
+
+__all__ = ['FMFTestCase', 'FMFAdapter']

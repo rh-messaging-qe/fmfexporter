@@ -2,12 +2,12 @@ sudo: false
 language: python
 python:
  - "3.6"
- - "3.7-dev"
+ #- "3.7-dev"
 
 install:
  - pip install wheel codecov coverage tox-travis
  - python setup.py bdist_wheel
- - pip install ./dist/tox_travis-*.whl
+ - pip install ./dist/fmfexporter-*.whl
 script: tox
 after_success: coverage combine && codecov
 
@@ -15,13 +15,11 @@ stages:
   - tests
   - name: deploy
   - name: release
-    if: tag IS present
+    if: tag IS present AND branch = master
 
 jobs:
   fast_finish: true
   include:
-  - python: 3.6
-    env: TOXENV=docs
   - stage: deploy
     python: 3.6
     install: true
@@ -36,17 +34,16 @@ jobs:
       distributions: bdist_wheel
       on:
         all_branches: true
-
   - stage: release
-      python: 3.6
-      install: true
-      script: true
-      after_success: true
-      deploy:
-        provider: pypi
-        user: rh-messaging-qe
-        password:
-          secure: "hYxFSBJBKcYYmU/dfKzjLCh6Gpw8X2pCIQls0HTcm1wmuYa9O+HGxQivwhLWmaJAjIkdfGAQmUCF1h7H5nDQUQj/FxSZN00qwQY+vPanu0XcJ6aIv4yobM1Z67w2mylYJNQRk10qiDQ5Xm+p+cbBFgNcgrQfFkwvlN3JmuIzhIl0+iVo+mIPQu6xiXDT5Lxus6yKIhG9UNhkdytV1R2KLBKn5sOu5bUYsC6Ayqn0yyro+ncab2IMfeMFDscMNVLDk75S4JD+FzIcRGxUjg32SixTFMUvbdRBbxgupB7DQDhX+De7rHWWp8hRyMylxBFvmHE17drq3Vv57a8gA/pIS/CytTlWxPUsI5rbnznoyCxiqmE4S7QBex/Pp6ZcE14oZD6YYPS1cbzYy/JU0QpLrruqcDyklOIjRYeDASZFbwhBX9gvB+Ve9G9SlPmDzrITPxQiGh0ud/1UkQZl/j3WuQ2hiXIpvMOVK0DBb0uMWEKd9iAQcSFMKE/v+bO4reIx3fSXQ+W4zAc2EWDknusesnK9fFH1nJZl53Zv9qY3nGuh3xqnY0FZl77prnhRNR/HXzFVGvL/gHnzNzSWhrxxdPkIHcMFGu0wpWxFzxbIWTLduFPsR+GCOn/8277JSjf1dcl8UDhhlVQ5XeLSDst52/lIw+yo59g0ResRYVROF4k="
-        distributions: bdist_wheel
-        on:
-          all_branches: true
+    python: 3.6
+    install: true
+    script: true
+    after_success: true
+    deploy:
+      provider: pypi
+      user: rh-messaging-qe
+      password:
+        secure: "hYxFSBJBKcYYmU/dfKzjLCh6Gpw8X2pCIQls0HTcm1wmuYa9O+HGxQivwhLWmaJAjIkdfGAQmUCF1h7H5nDQUQj/FxSZN00qwQY+vPanu0XcJ6aIv4yobM1Z67w2mylYJNQRk10qiDQ5Xm+p+cbBFgNcgrQfFkwvlN3JmuIzhIl0+iVo+mIPQu6xiXDT5Lxus6yKIhG9UNhkdytV1R2KLBKn5sOu5bUYsC6Ayqn0yyro+ncab2IMfeMFDscMNVLDk75S4JD+FzIcRGxUjg32SixTFMUvbdRBbxgupB7DQDhX+De7rHWWp8hRyMylxBFvmHE17drq3Vv57a8gA/pIS/CytTlWxPUsI5rbnznoyCxiqmE4S7QBex/Pp6ZcE14oZD6YYPS1cbzYy/JU0QpLrruqcDyklOIjRYeDASZFbwhBX9gvB+Ve9G9SlPmDzrITPxQiGh0ud/1UkQZl/j3WuQ2hiXIpvMOVK0DBb0uMWEKd9iAQcSFMKE/v+bO4reIx3fSXQ+W4zAc2EWDknusesnK9fFH1nJZl53Zv9qY3nGuh3xqnY0FZl77prnhRNR/HXzFVGvL/gHnzNzSWhrxxdPkIHcMFGu0wpWxFzxbIWTLduFPsR+GCOn/8277JSjf1dcl8UDhhlVQ5XeLSDst52/lIw+yo59g0ResRYVROF4k="
+      distributions: bdist_wheel
+      on:
+        all_branches: true

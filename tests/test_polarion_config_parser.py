@@ -19,7 +19,8 @@ def polarion_config():
 
 def test_polarion_config_parser(polarion_config):
     """
-    Asserts that the polarion adapter configuration keys and values have been parsed correctly.
+    Asserts that the polarion adapter configuration keys and values have been
+    parsed correctly.
     :param polarion_config:
     :return:
     """
