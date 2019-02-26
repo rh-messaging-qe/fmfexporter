@@ -16,7 +16,7 @@ class PolarionTestCase(object):
     """
     # Used to define file name for test case based on
     # classname.name (keeping just characters, numbers and dot)
-    RE_FILE_NAME = re.compile(r'[^A-Za-z0-9_\.]')
+    RE_FILE_NAME = re.compile(r'[^A-Za-z0-9_.]')
 
     #
     # Regular expression used to match user part of an e-mail address
