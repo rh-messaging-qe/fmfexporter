@@ -8,8 +8,6 @@ install:
  - pip install wheel codecov coverage tox-travis
  - python setup.py bdist_wheel
  - pip install ./dist/fmfexporter-*.whl
-script: tox
-after_success: codecov
 
 stages:
   - name: tests
@@ -18,6 +16,10 @@ stages:
 jobs:
   fast_finish: true
   include:
+    - stage: tests
+      script: tox
+      after_script:
+        - codecov
     - stage: deploy
       name: "Deploy fmfexporter to Test PyPi"
       python: 3.6
