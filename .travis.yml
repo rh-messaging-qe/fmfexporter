@@ -9,21 +9,21 @@ install:
  - python setup.py bdist_wheel
  - pip install ./dist/fmfexporter-*.whl
 script: tox
-after_success: coverage combine && codecov
+after_success: codecov
 
 stages:
-  - tests
-  - name: deploy
+  - name: tests
+  - name: release-testpypi
   - name: release
     if: tag IS present AND branch = master
 
 jobs:
   fast_finish: true
   include:
-  - stage: deploy
+  - stage: release-testpypi
     python: 3.6
     install: true
-    script: true
+    script: skip
     after_success: true
     deploy:
       provider: pypi
@@ -37,7 +37,7 @@ jobs:
   - stage: release
     python: 3.6
     install: true
-    script: true
+    script: skip
     after_success: true
     deploy:
       provider: pypi
