@@ -21,6 +21,6 @@ upload:
 
 clean:
 	python setup.py clean
-	rm -rf build dist fmfexporter.egg-info .eggs
+	rm -rf build dist fmfexporter.egg-info .eggs .tox
 	find . -type f -name "*.py[co]" -delete
 	find . -type d -name "__pycache__" -delete

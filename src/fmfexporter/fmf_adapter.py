@@ -143,7 +143,7 @@ class FMFAdapter(abc.ABC, object):
     def submit_testcase_list(self, fmf_testcase_list: list):
         """
         Submit a list of FMFAdapterTestCase objects (based on adapter's version of a test case).
-        :param fmf_adapter_testcase_list:
+        :param fmf_testcase_list:
         :return:
         """
         print("Submitting %d test cases to %s" % (len(fmf_testcase_list), self.adapter_id()))

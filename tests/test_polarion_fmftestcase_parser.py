@@ -10,15 +10,15 @@ Polarion Test Case properly.
 
 
 @pytest.fixture(scope="module")
-def testcase(request):
+def testcase():
     """
     Creates a testcase fixture which is an instance of a PolarionTestCase class,
     and it is created from a generic FMF Test Case metadata.
-    :param request:
     :return:
     """
     fmf_adapter = FMFAdapterPolarion(os.path.dirname(os.path.abspath(__file__)))
-    tc = fmf_adapter.get_testcase('test_path.some_test_class.foo_test.TestFoo', 'test_foo_sample_01')
+    tc = fmf_adapter.get_testcase('test_path.some_test_class.foo_test.TestFoo',
+                                  'test_foo_sample_01')
     ptc = PolarionTestCase.from_fmf_testcase(tc)
     return ptc
 
@@ -48,8 +48,10 @@ def test_polarion_fmftestcase_parser_authoring(testcase):
 
 def test_polarion_fmftestcase_parser_relationship(testcase):
     """
-    Asserts that the Polarion Test Case verifies elements are mapped correctly from an FMF Test Case
-    TODO Probably need to be split into other fields for Polarion. Currently everything becomes "verifies".
+    Asserts that the Polarion Test Case verifies elements are mapped
+    correctly from an FMF Test Case
+    TODO Probably need to be split into other fields for Polarion.
+         Currently everything becomes "verifies".
     :param testcase:
     :return:
     """

@@ -1,6 +1,6 @@
 from fmfexporter import FMFTestCase
 import re
-import xml.etree.ElementTree as etree
+import xml.etree.ElementTree as ElTree
 from xml.dom import minidom
 
 from fmfexporter.adapters.polarion.utils.polarion_xml import PolarionXmlUtils
@@ -16,7 +16,7 @@ class PolarionTestCase(object):
     """
     # Used to define file name for test case based on
     # classname.name (keeping just characters, numbers and dot)
-    RE_FILE_NAME = re.compile(r'[^A-Za-z0-9_\.]')
+    RE_FILE_NAME = re.compile(r'[^A-Za-z0-9_.]')
 
     #
     # Regular expression used to match user part of an e-mail address
@@ -172,18 +172,18 @@ class PolarionTestCase(object):
         on current state of this instance.
         :return: str representing the test case xml
         """
-        xmltree = etree.ElementTree(element=etree.Element('testcases'))
+        xmltree = ElTree.ElementTree(element=ElTree.Element('testcases'))
 
         # root element - testcases and attributes
         xmlroot = xmltree.getroot()
         xmlroot.attrib['project-id'] = self.project
 
         # properties
-        properties = etree.SubElement(xmlroot, 'properties')
+        properties = ElTree.SubElement(xmlroot, 'properties')
         PolarionXmlUtils.new_property_sub_element(properties, 'lookup-method', self.lookup_method)
 
         # testcase and attributes
-        tc = etree.SubElement(xmlroot, 'testcase')
+        tc = ElTree.SubElement(xmlroot, 'testcase')
         tc.set('assignee-id', self.assignee)
         if self.approvals:
             tc.set('approver-ids', ",".join([ap + ":approved" for ap in self.approvals]))
@@ -192,11 +192,11 @@ class PolarionTestCase(object):
 
         # testcase child elements
         # testcase/title
-        tc_title = etree.SubElement(tc, 'title')
+        tc_title = ElTree.SubElement(tc, 'title')
         tc_title.text = self.title
 
         # testcase/description
-        tc_description = etree.SubElement(tc, 'description')
+        tc_description = ElTree.SubElement(tc, 'description')
         tc_description.text = PolarionTestCase.DESC_PREFIX_SUFFIX
         if self.description:
             tc_description.text += "<br>"
@@ -205,7 +205,7 @@ class PolarionTestCase(object):
             tc_description.text += PolarionTestCase.DESC_PREFIX_SUFFIX
 
         # testcase/custom-fields
-        tc_custom = etree.SubElement(tc, 'custom-fields')
+        tc_custom = ElTree.SubElement(tc, 'custom-fields')
         PolarionXmlUtils.new_custom_field(tc_custom, 'casecomponent', self.component)
         PolarionXmlUtils.new_custom_field(tc_custom, 'subcomponent', self.sub_component)
         PolarionXmlUtils.new_custom_field(tc_custom, 'testtype', self.type)
@@ -218,15 +218,17 @@ class PolarionTestCase(object):
 
         # testcase/linked-work-items
         if self.verifies:
-            tc_linked = etree.SubElement(tc, 'linked-work-items')
-            for verify in [verify for verify in self.verifies if isinstance(verify, dict)]:
-                PolarionXmlUtils.new_linked_work_item(tc_linked,
-                                                      verify.get('polarion', verify.get('jira', '')),
-                                                      'verifies')
+            tc_linked = ElTree.SubElement(tc, 'linked-work-items')
+            for verify in [verify for verify in self.verifies
+                           if isinstance(verify, dict)]:
+                PolarionXmlUtils.new_linked_work_item(
+                    tc_linked,
+                    verify.get('polarion', verify.get('jira', '')),
+                    'verifies')
 
         # testcase/test-steps
         if self.steps:
-            tc_steps = etree.SubElement(tc, 'test-steps')
+            tc_steps = ElTree.SubElement(tc, 'test-steps')
 
             # If test case has parameters, add them
             if self.parameters:
@@ -235,6 +237,6 @@ class PolarionTestCase(object):
             for step in self.steps:
                 PolarionXmlUtils.new_test_step(tc_steps, step.step, step.result)
 
-        xml_str = minidom.parseString(etree.tostring(xmlroot)).toprettyxml()
+        xml_str = minidom.parseString(ElTree.tostring(xmlroot)).toprettyxml()
 
         return xml_str

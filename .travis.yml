@@ -1,0 +1,45 @@
+sudo: false
+language: python
+python:
+ - "3.6"
+ #- "3.7-dev"
+
+install:
+ - pip install wheel codecov coverage tox-travis
+ - python setup.py bdist_wheel
+ - pip install ./dist/fmfexporter-*.whl
+
+stages:
+  - name: tests
+  - name: deploy
+
+jobs:
+  fast_finish: true
+  include:
+    - stage: tests
+      script: tox
+      after_script:
+        - codecov
+    - stage: deploy
+      name: "Deploy fmfexporter to Test PyPi"
+      python: 3.6
+      install: true
+      script: skip
+      after_success: true
+      deploy:
+        - provider: pypi
+          user: rh-messaging-qe
+          server: https://testpypi.python.org/pypi
+          password:
+            secure: "TFxPZnlE6piKSv8EbLxX4yrlyuIFuEjzvNA/aEXSqpq3qTLJtEBDdfzLyIqXLW5UFtmKsjPur/L5cdrVN+5Pw5yHdxWA7amUpm60GOf7J3Kk9RcSbfEZ2wISWuhSqIbEeounIiuRcleClPysiZOrLc9sqWXqDUjT4IxDvMIlJy3/4FIRG+0Vbj2NktMsaj0v2Byp34Ju174mFDSA/UgIw78vj4F6OEI2f18DUx17MPOFXMc9klFeGCmlM1Je1cnFIlKX/YaasHXsxeLXu+y0btACORKAAVmOkFRPt3vgxgqBw3T2I1u10Ufbj9xySLBMcXxeYJMmQGursOxAI6lXPZ3TgKPigqERb1+0XJeftr+7+b3lVcAFpa6IthIAfUed51UcmvtJEzWzj1jv5AaDYbpaK4wWrX/Rgxh7tEIJ93GxF+5D6oHyqM7bDxEzSNt4wnq83DKyE1Imq2o+9Ks/jmrT8Vk0j8yUf+BKDLuRJwjP0ZJhmpF3EBihG/DC7VXgs/a7k2DPHwi0cn8tOSlz2meDsHG6wbOVKTr9iS7uDe/MJSJRzDR5Cnbk4bM7mLJ4qm3uI42pJgEPyr3CnKZBkvMnQ+9RDNDzDp+hyhx+tlKq3EpGf/Sf68gyNLT7ACgX08om8CshXxR52JeIbF6cb5xS2UUHvHfolNvPDnvk0UA="
+          distributions: bdist_wheel
+          on:
+            all_branches: true
+        - provider: pypi
+          user: rh-messaging-qe
+          password:
+            secure: "hYxFSBJBKcYYmU/dfKzjLCh6Gpw8X2pCIQls0HTcm1wmuYa9O+HGxQivwhLWmaJAjIkdfGAQmUCF1h7H5nDQUQj/FxSZN00qwQY+vPanu0XcJ6aIv4yobM1Z67w2mylYJNQRk10qiDQ5Xm+p+cbBFgNcgrQfFkwvlN3JmuIzhIl0+iVo+mIPQu6xiXDT5Lxus6yKIhG9UNhkdytV1R2KLBKn5sOu5bUYsC6Ayqn0yyro+ncab2IMfeMFDscMNVLDk75S4JD+FzIcRGxUjg32SixTFMUvbdRBbxgupB7DQDhX+De7rHWWp8hRyMylxBFvmHE17drq3Vv57a8gA/pIS/CytTlWxPUsI5rbnznoyCxiqmE4S7QBex/Pp6ZcE14oZD6YYPS1cbzYy/JU0QpLrruqcDyklOIjRYeDASZFbwhBX9gvB+Ve9G9SlPmDzrITPxQiGh0ud/1UkQZl/j3WuQ2hiXIpvMOVK0DBb0uMWEKd9iAQcSFMKE/v+bO4reIx3fSXQ+W4zAc2EWDknusesnK9fFH1nJZl53Zv9qY3nGuh3xqnY0FZl77prnhRNR/HXzFVGvL/gHnzNzSWhrxxdPkIHcMFGu0wpWxFzxbIWTLduFPsR+GCOn/8277JSjf1dcl8UDhhlVQ5XeLSDst52/lIw+yo59g0ResRYVROF4k="
+          distributions: bdist_wheel
+          on:
+            branch: master
+            tags: true

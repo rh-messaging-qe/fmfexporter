@@ -1,5 +1,8 @@
 # fmfexporter
 
+[![Build Status](https://img.shields.io/travis/rh-messaging-qe/fmfexporter.svg?style=for-the-badge)](https://travis-ci.org/rh-messaging-qe/fmfexporter)
+[![Code coverage](https://img.shields.io/codecov/c/github/rh-messaging-qe/fmfexporter.svg?style=for-the-badge)](https://codecov.io/gh/rh-messaging-qe/fmfexporter)	
+
 FMF (Flexible Metadata Format) test case exporter tool.
 
 This tool can be used to convert and export Test Cases defined
@@ -13,7 +16,7 @@ Format for defining the test case is YAML (Simple example available -- *WIP* -- 
 
 ## Pre-requisites
 
-* python 3.6+
+* Python 3.6+
 * recommended to install fmfexporter or its requirements in a virtualenv
 
 ## Usage

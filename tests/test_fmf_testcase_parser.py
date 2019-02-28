@@ -9,15 +9,16 @@ from fmfexporter.fmf_adapter import FMFAdapterTest
 Validates if FMF Test Cases are being parsed as expected.
 """
 
+
 @pytest.fixture(scope="module")
-def testcase(request) -> FMFTestCase:
+def testcase() -> FMFTestCase:
     """
     Generate a testcase fixture containing a static test case.
-    :param request:
     :return:
     """
     fmf_adapter = FMFAdapterTest(os.path.dirname(os.path.abspath(__file__)))
-    tc = fmf_adapter.get_testcase('test_path.some_test_class.foo_test.TestFoo', 'test_foo_sample_01')
+    tc = fmf_adapter.get_testcase('test_path.some_test_class.foo_test.TestFoo',
+                                  'test_foo_sample_01')
     return tc
 
 

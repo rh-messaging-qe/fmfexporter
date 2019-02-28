@@ -4,9 +4,11 @@ import sys
 
 from fmfexporter.adapters.polarion.utils.polarion_config import PolarionConfig
 from fmfexporter.fmf_adapter import FMFAdapterArgParser
+
 """
 Argument parser for the FMF Polarion Adapter.
 """
+
 
 class PolarionArgParser(FMFAdapterArgParser):
     """
