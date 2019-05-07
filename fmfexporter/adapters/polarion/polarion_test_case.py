@@ -106,6 +106,14 @@ class PolarionTestCase(object):
         # Parameters
         tc.parameters = fmf_testcase.parameters
 
+        # Setup
+        for fmf_setup_step in fmf_testcase.test_setup:
+            tc.setup.append(PolarionTestCase.Step(fmf_setup_step['step'], fmf_setup_step['expected']))
+
+        # Teardown
+        for fmf_teardown_step in fmf_testcase.test_teardown:
+            tc.teardown.append(PolarionTestCase.Step(fmf_teardown_step['step'], fmf_teardown_step['expected']))
+
         # Steps
         for fmf_step in fmf_testcase.test_steps:
             tc.steps.append(PolarionTestCase.Step(fmf_step['step'], fmf_step['expected']))
@@ -166,6 +174,8 @@ class PolarionTestCase(object):
         self.type = ""
         self.level = ""
         self.importance = ""
+        self.setup = []
+        self.teardown = []
         self.steps = []
         self.approvals = []
         self.subtype1 = ""
@@ -235,8 +245,14 @@ class PolarionTestCase(object):
                                                       'verifies')
 
         # testcase/test-steps
-        if self.steps:
+        if self.steps or self.setup or self.teardown:
             tc_steps = etree.SubElement(tc, 'test-steps')
+
+            for step in self.setup:
+                PolarionXmlUtils.new_test_step(tc_steps, "(setup) #. {}".format(step.step), step.result)
+
+            for step in self.teardown:
+                PolarionXmlUtils.new_test_step(tc_steps, "(teardown) #. {}".format(step.step), step.result)
 
             # If test case has parameters, add them
             if self.parameters:
