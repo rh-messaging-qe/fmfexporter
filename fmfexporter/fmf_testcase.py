@@ -81,6 +81,12 @@ class FMFTestCase(object):
         self.defects: List[FMFTestCaseRelationship] = []
         self.requirements: List[FMFTestCaseRelationship] = []
 
+        # Setup
+        self.test_setup = []
+
+        # Teardown
+        self.test_teardown = []
+
         # Steps
         self.test_steps = []
 
@@ -142,6 +148,12 @@ class FMFTestCase(object):
             # Relationships
             fmf_tc.defects = [FMFTestCaseRelationship(defect) for defect in get_fmf_data(fmf_node, 'defects', [])]
             fmf_tc.requirements = [FMFTestCaseRelationship(req) for req in get_fmf_data(fmf_node, 'requirements', [])]
+
+            # Setup
+            fmf_tc.test_setup = get_fmf_data(fmf_node, 'test-setup', [])
+
+            # Teardown
+            fmf_tc.test_teardown = get_fmf_data(fmf_node, 'test-teardown', [])
 
             # Steps
             fmf_tc.test_steps = get_fmf_data(fmf_node, 'test-steps', [])
