@@ -4,6 +4,11 @@ import xml.etree.ElementTree as etree
 from xml.dom import minidom
 from html import escape
 from fmfexporter.adapters.polarion.utils.polarion_xml import PolarionXmlUtils
+
+# Static styles to be used while rendering HTML tables
+HTML_TABLE_TD_STYLE = 'height: 12px;text-align: left;vertical-align: top;line-height: 18px;border: 1px solid #CCCCCC;padding: 5px;'
+HTML_TABLE_TH_STYLE = 'white-space: nowrap; height: 12px;text-align: left;vertical-align: top;font-weight: bold;background-color: #F0F0F0;border: 1px solid #CCCCCC;padding: 5px;width: 50%;'
+HTML_TABLE_STYLE = 'margin: auto;empty-cells: show;border-collapse: collapse;border: 1px solid #CCCCCC;width:80%;'
 """
 Representation of a Polarion Test Case XML.
 """
@@ -106,6 +111,14 @@ class PolarionTestCase(object):
         # Parameters
         tc.parameters = fmf_testcase.parameters
 
+        # Setup
+        for fmf_setup_step in fmf_testcase.test_setup:
+            tc.setup.append(PolarionTestCase.Step(fmf_setup_step['step'], fmf_setup_step['expected']))
+
+        # Teardown
+        for fmf_teardown_step in fmf_testcase.test_teardown:
+            tc.teardown.append(PolarionTestCase.Step(fmf_teardown_step['step'], fmf_teardown_step['expected']))
+
         # Steps
         for fmf_step in fmf_testcase.test_steps:
             tc.steps.append(PolarionTestCase.Step(fmf_step['step'], fmf_step['expected']))
@@ -166,6 +179,8 @@ class PolarionTestCase(object):
         self.type = ""
         self.level = ""
         self.importance = ""
+        self.setup = []
+        self.teardown = []
         self.steps = []
         self.approvals = []
         self.subtype1 = ""
@@ -225,6 +240,8 @@ class PolarionTestCase(object):
         PolarionXmlUtils.new_custom_field(tc_custom, 'caseimportance', self.importance)
         PolarionXmlUtils.new_custom_field(tc_custom, 'caseposneg', self.positive)
         PolarionXmlUtils.new_custom_field(tc_custom, 'caseautomation', self.automated)
+        PolarionXmlUtils.new_custom_field(tc_custom, 'setup', self.create_step_result_table(self.setup))
+        PolarionXmlUtils.new_custom_field(tc_custom, 'teardown', self.create_step_result_table(self.teardown))
 
         # testcase/linked-work-items
         if self.verifies:
@@ -248,3 +265,27 @@ class PolarionTestCase(object):
         xml_str = minidom.parseString(etree.tostring(xmlroot)).toprettyxml()
 
         return xml_str
+
+    def create_step_result_table(self, steps):
+        """
+        Generates an HTML table (same style used by Polarion in Test Steps table).
+        Provided steps (array) must contain a "step" and "result" attributes.
+        :param steps:
+        :return:
+        """
+        if not steps:
+            return None
+
+        setup_content = ('<table style="' + HTML_TABLE_STYLE + '"><tbody>')
+        setup_content += ('<tr><th style="' + HTML_TABLE_TH_STYLE + '" contenteditable="false">Step</th>')
+        setup_content += ('<th style="' + HTML_TABLE_TH_STYLE + '" contenteditable="false">Expected Result</th></tr>')
+        for step in steps:
+            setup_content += '<tr><td style="{}">{}</td>'.format(
+                HTML_TABLE_TD_STYLE,
+                escape(step.step).replace('\n', '<br>'))
+            setup_content += '<td style="{}">{}</td></tr>'.format(
+                HTML_TABLE_TD_STYLE,
+                escape(step.result).replace('\n', '<br>'))
+        setup_content += '</tbody></table>'
+
+        return setup_content
