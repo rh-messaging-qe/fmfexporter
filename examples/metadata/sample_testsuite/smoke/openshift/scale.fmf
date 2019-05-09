@@ -1,0 +1,37 @@
+/test_scale_up_router:
+  summary: 'Scale up "amq-interconnect" deployment config name with 3 replicas'
+  description: |
+    The test will try to scale up the number of replicas for the "amq-interconnect" (static) deployment config name
+    and validate that the scale up command exited successfully.
+  authors:
+    - 'Fernando Giorgetti <fgiorget@redhat.com>'
+  approvals:
+    - 'Dominik Lenoch <dlenoch@redhat.com>'
+  tags:
+    - 'openshift'
+    - 'scale'
+    - 'mesh'
+  estimate: '2min'
+  components:
+    - 'Qpid_Dispatch_Router'
+  subcomponents:
+    - 'connections'
+  level: 'component'
+  importance: 'high'
+  type: 'functional'
+  test-steps:
+    - step: 'Run oc scale up command using 3 replicas'
+      expected: 'Expect command to exit successfully'
+  adapter:
+    polarion:
+      project: 'ENTMQIC'
+      lookup-method: 'name'
+      positive: True
+      automated: True
+      subtypes:
+        - 'compliance'
+        - '-'
+  testsuite:
+    name: 'openshift'
+    description: 'Smoke test a Router application running on OpenShift'
+
