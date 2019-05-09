@@ -270,7 +270,7 @@ class PolarionTestCase(object):
         setup_content += ('<tr><th style="' + HTML_TABLE_TH_STYLE + '" contenteditable="false">Step</th>')
         setup_content += ('<th style="' + HTML_TABLE_TH_STYLE + '" contenteditable="false">Expected Result</th></tr>')
         for step in steps:
-            setup_content += '<tr><td style="{}">(setup) #. {}</td>'.format(
+            setup_content += '<tr><td style="{}">{}</td>'.format(
                 HTML_TABLE_TD_STYLE,
                 escape(step.step).replace('\n', '<br>'))
             setup_content += '<td style="{}">{}</td></tr>'.format(
