@@ -2,7 +2,7 @@ from fmfexporter import FMFTestCase
 import re
 import xml.etree.ElementTree as etree
 from xml.dom import minidom
-
+from html import escape
 from fmfexporter.adapters.polarion.utils.polarion_xml import PolarionXmlUtils
 """
 Representation of a Polarion Test Case XML.
@@ -44,6 +44,16 @@ class PolarionTestCase(object):
         tc.id = fmf_testcase.name.replace('/', '.')[1:]
         tc.title = tc.id
         tc.description = "%s\n%s" % (fmf_testcase.summary, fmf_testcase.description)
+
+        # If authors defined, add them to the description
+        if fmf_testcase.authors:
+            tc.description += "\n\nAuthors:\n"
+            tc.description += "\n".join(fmf_testcase.authors)
+
+        # If approvals defined, add them to the description
+        if fmf_testcase.approvals:
+            tc.description += "\n\nApprovals:\n"
+            tc.description += "\n".join(fmf_testcase.approvals)
 
         # Set the assignee in case author is defined correctly
         if len(fmf_testcase.authors) > 0:
@@ -200,7 +210,7 @@ class PolarionTestCase(object):
         tc_description.text = PolarionTestCase.DESC_PREFIX_SUFFIX
         if self.description:
             tc_description.text += "<br>"
-            tc_description.text += self.description.replace('\n', '<br>')
+            tc_description.text += escape(self.description).replace('\n', '<br>')
             tc_description.text += "<br>"
             tc_description.text += PolarionTestCase.DESC_PREFIX_SUFFIX
 
