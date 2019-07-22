@@ -17,6 +17,11 @@ from fmfexporter.fmf_adapter import FMFAdapter
 # Main flow
 if __name__ == '__main__':
 
+    if "--show-scheme" in sys.argv:
+        import fmfexporter.metadata
+        fmfexporter.metadata.show_scheme()
+        sys.exit(0)
+
     # Parse command line arguments
     argparser = FMFExporterArgParser()
     parsed = argparser.parse_args()
