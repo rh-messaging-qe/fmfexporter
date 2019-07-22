@@ -1,0 +1,23 @@
+name: test-steps
+type: list of maps or list of string
+purpose: TODO
+status: proposal
+
+motivation:
+  Store information about every single step under test-case.
+
+stories:
+  - As a tester I want to know what test doing step-by-step
+    without looking to the code.
+
+examples: |
+  test-steps:
+      - step: Send message with Client.A to Router.B
+        expected: Message was sucessfully sended.
+      - step: Receive message with Client.B from Router.A
+        expected: Message was sucessfully received.
+
+  test-steps:
+      - First step (Try to support easyform test-steps without map/expected)
+      - Second step
+      - ...

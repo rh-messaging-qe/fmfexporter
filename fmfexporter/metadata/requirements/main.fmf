@@ -1,0 +1,19 @@
+name: requirements
+type: list of freeform dictionaries
+purpose: relevant data about requirements
+status: proposal
+
+motivation:
+  Store requirements linked to test.
+
+stories:
+  - As a QE I would like to see all tests related to specified cutomer scenarion.
+
+examples: |
+  requirements:
+      - jira: XYZ-1234:
+        customer-case: True
+      - jira: XYZ-2345:
+      - jira: XYZ-3456:
+
+notes: Freeform dictionaries in list [jira, bugzilla, customer-case]...

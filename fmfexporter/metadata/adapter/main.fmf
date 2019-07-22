@@ -1,0 +1,15 @@
+name: adapter
+type: dictionary
+purpose: Adapter
+status: proposal
+
+motivation:
+  Store adapters related metadata
+
+stories:
+  - TODO
+
+examples: |
+  adapter:
+      polarion:
+      tcsm:

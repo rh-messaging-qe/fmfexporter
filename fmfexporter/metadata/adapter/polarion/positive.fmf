@@ -1,0 +1,15 @@
+name: positive
+type: bool
+purpose: test positive/negative information
+status: proposal
+
+motivation:
+  Store information about positive or negative test.
+
+stories:
+  - TODO
+
+examples: |
+  adapter:
+      polarion:
+          positive: True

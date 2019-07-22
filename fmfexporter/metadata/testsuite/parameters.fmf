@@ -1,0 +1,17 @@
+name: parameters
+type: list of strings
+purpose: TODO
+status: proposal
+
+motivation:
+  Store parameters used in testsuite
+
+stories:
+  - TODO
+
+examples: |
+  testsuite:
+      parameters:
+        - 'Router'
+        - 'ClientA'
+        - 'ClientB'

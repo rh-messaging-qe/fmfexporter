@@ -1,0 +1,16 @@
+name: project
+type: string
+purpose: Polarion project ID
+status: proposal
+
+motivation:
+  Store Polarion project ID
+
+stories:
+  - As a QE I would like to know where report the tests
+    results with related metadata.
+
+examples: |
+  adapter:
+      polarion:
+          project: XYZ

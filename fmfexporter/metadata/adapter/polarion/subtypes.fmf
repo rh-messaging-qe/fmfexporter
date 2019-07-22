@@ -1,0 +1,17 @@
+name: subtypes
+type: list
+purpose: Polarion subtype1 and subtype2
+status: proposal
+
+motivation:
+  Store Polarion subtypes
+
+stories:
+  - As a enterprise Polarion I need to have provided subtype1 and subtype2. I know that it not a give sense..
+
+examples: |
+  adapter:
+      polarion:
+          subtypes:
+              - abc_subtype1
+              - abc_subtype2

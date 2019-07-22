@@ -1,0 +1,16 @@
+name: properties
+type: dictionary freeform
+purpose: testsuite properties
+status: proposal
+
+motivation:
+  Store properties used in testsuite
+
+stories:
+  - TODO
+
+examples: |
+  testsuite:
+      properties:
+          abcd: 'yyy'
+          fgh: 'xyz'

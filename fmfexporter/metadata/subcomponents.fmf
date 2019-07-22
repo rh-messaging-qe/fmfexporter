@@ -1,0 +1,32 @@
+name: subcomponents
+type: string or list of strings
+purpose: relevant subcomponents name
+status: proposal
+
+motivation:
+  TODO
+
+stories:
+  - TODO
+
+examples: >
+  subcomponents:
+      - connections
+      - protocols
+      - message_content
+      - message_delivery
+      - transactions
+      - management
+      - routing
+      - multitenancy
+      - configuration
+      - logging
+      - packaging
+
+  subcomponents: protocols
+
+notes: >
+  The following fmf command can be used to select test set described
+  by the user story above:
+
+  fmf --key test subcomponents: 'connections'

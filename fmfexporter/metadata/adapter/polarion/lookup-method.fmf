@@ -1,0 +1,15 @@
+name: lookup-method
+type: string
+purpose: Polarion lookup method
+status: proposal
+
+motivation:
+  Store Polarion lookup method
+
+stories:
+  - TODO
+
+examples: |
+  adapter:
+      polarion:
+          lookup-method: XYZ

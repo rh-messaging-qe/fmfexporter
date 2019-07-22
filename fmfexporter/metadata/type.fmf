@@ -1,0 +1,15 @@
+name: type
+type: string
+purpose: TODO
+status: proposal
+
+motivation:
+  TODO
+
+stories:
+  - TODO
+
+examples: |
+  type: functional
+  type: nonfunctional
+  type: structural
