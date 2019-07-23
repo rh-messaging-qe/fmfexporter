@@ -1,0 +1,16 @@
+name: compatible-topologies
+type: list of strings
+purpose: compatible topologies
+status: proposal
+
+motivation:
+  Store all topologies with which is testsuite compatible.
+
+stories:
+  - As a tester I would like to know with which all topologies I can run the testsuite.
+
+examples: |
+  testsuite:
+      compatible-topologies:
+          - '1234'
+          - '2345'

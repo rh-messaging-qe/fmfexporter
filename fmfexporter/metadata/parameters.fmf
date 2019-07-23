@@ -1,0 +1,18 @@
+name: parameters
+type: list of strings
+purpose: TODO
+status: proposal
+
+motivation:
+  Store parameters which test needs
+
+stories:
+  - TODO
+
+examples: |
+  parameters:
+      - Sender
+      - Receiver
+      - Broker
+      - RouterA
+      - RouterB

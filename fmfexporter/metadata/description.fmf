@@ -1,0 +1,24 @@
+name: description
+type: string (multi line, plain text)
+purpose: detailed description of what the test does
+status: proposal
+
+motivation:
+  For complex tests it makes sense to provide more detailed
+  description to better clarify what is covered by the test.
+
+stories:
+  - As a tester I come to a test code I wrote 10 years ago (so I have
+    absolutely no idea about it) and would like to quickly understand
+    what it does.
+  - As a developer I review existing test coverage for my component
+    and would like to get an overall idea what is covered without
+    having to read the whole test code.
+
+examples: |
+  description: |
+      This test checks all available wget options related to
+      downloading files recursively. First a tree directory
+      structure is created for testing. Then a file download
+      is performed for different recursion depth specified by
+      the "--level=depth" option.

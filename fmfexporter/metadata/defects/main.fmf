@@ -1,0 +1,19 @@
+name: defects
+type: list of freeform dictionaries
+purpose: relevant data about defects
+status: proposal
+
+motivation:
+  Specified all issues which is related to the test.
+
+stories:
+  - As a tester I would like to run all tests which verifies specific issue.
+
+examples: |
+  defects:
+      - jira: XYZ-1234:
+        freeform-element: XYZ
+      - jira: XYZ-2345:
+      - bugzilla: XYZ-3456:
+
+notes: Freeform dictionaries in list [jira, bugzilla]...

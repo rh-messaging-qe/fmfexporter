@@ -1,0 +1,19 @@
+name: testsuite
+type: dictionary
+purpose: TODO
+status: proposal
+
+motivation:
+  Store parameters used in testsuite
+
+stories:
+  - TODO
+
+examples: |
+  testsuite:
+      properties:
+          xxx: a
+          yyy: b
+      parameters:
+          - 'ABCD'
+          - 'EFGH'

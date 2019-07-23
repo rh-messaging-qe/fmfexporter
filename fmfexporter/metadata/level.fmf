@@ -1,0 +1,16 @@
+name: level
+type: string
+purpose: TODO
+status: proposal
+
+motivation:
+  TODO
+
+stories:
+  - TODO
+
+examples: |
+  level: component
+  level: integration
+  level: system
+  lelve: acceptance

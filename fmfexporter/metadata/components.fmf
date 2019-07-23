@@ -1,0 +1,29 @@
+name: components
+type: string or list of strings
+purpose: relevant components name
+status: proposal
+
+motivation:
+  It's useful to be able to easily select all tests relevant for given
+  components. As they do not always have to be stored in the
+  same repository and because many tests cover multiple components a
+  dedicated field is needed.
+
+stories:
+  - As a tester testing the "Console" component I want to
+    run all tests for Console component.
+
+examples: |
+  components:
+      - CLI_Tools
+      - Console
+      - Packaging
+      - Qpid Dispatch Router
+
+  components: Console
+
+notes: >
+  The following fmf command can be used to select test set described
+  by the user story above:
+
+  fmf --key test --filter component: 'Console'

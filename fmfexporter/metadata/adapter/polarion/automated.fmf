@@ -1,0 +1,15 @@
+name: automated
+type: bool
+purpose: automated status
+status: proposal
+
+motivation:
+  Store information about test automation state.
+
+stories:
+  - TODO
+
+examples: |
+  adapter:
+      polarion:
+          automated: True

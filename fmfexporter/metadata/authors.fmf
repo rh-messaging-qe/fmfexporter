@@ -1,0 +1,17 @@
+name: authors
+type: string or list of strings (name with email address)
+purpose: person(s) created the test
+status: proposal
+
+motivation:
+  TODO
+
+stories:
+  - TODO
+
+examples: |
+  authors: First Person <first@person.xyz>
+
+  authors:
+      - First Person <first@person.xyz>
+      - Second Person <second@person.xyz>

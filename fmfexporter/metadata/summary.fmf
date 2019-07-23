@@ -1,0 +1,15 @@
+name: summary
+type: string (one line, up to 50 characters)
+purpose: concise summary of what the test does
+status: proposal
+
+motivation:
+  In order to efficiently collaborate on test maintenance it's
+  crucial to have a short summary of what the test does.
+
+stories:
+  - As a developer reviewing multiple failed tests I would like
+    to get quickly an idea of what my change broke.
+
+examples: |
+  summary: Test wget recursive download options

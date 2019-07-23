@@ -1,0 +1,14 @@
+name: polarion
+type: dictionary
+purpose: Adapter for Polarion
+status: proposal
+
+motivation:
+  Store Polarion adapter related metadata
+
+stories:
+  - TODO
+
+examples: |
+  adapter:
+      polarion:

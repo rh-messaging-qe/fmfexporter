@@ -1,0 +1,17 @@
+name: approvals
+type: string or list of strings (name with email address)
+purpose: person(s) who reviewed tests
+status: proposal
+
+motivation:
+  TODO
+
+stories:
+  - TODO
+
+examples: |
+  approvals: First Person <first@person.xyz>
+
+  approvals:
+      - First Person <first@person.xyz>
+      - Second Person <second@person.xyz>

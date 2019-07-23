@@ -1,0 +1,19 @@
+name: importance
+type: string or int
+purpose: TODO
+status: proposal
+
+motivation:
+  TODO
+
+stories:
+  - As a tester I would like to know which test to prioritize.
+
+examples: |
+  importance: low
+  importance: medium
+  importance: high
+  importance: critical
+  importance: 10
+  importance: 25
+  importance: 50

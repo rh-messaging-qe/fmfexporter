@@ -1,0 +1,13 @@
+name: estimate
+type: string
+purpose: store estimeation time
+status: proposal
+
+motivation:
+  Sort test by estimation
+
+stories:
+  - As a tester I would like to better estimate a test run.
+
+examples: |
+  estimate: "30m"

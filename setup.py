@@ -1,16 +1,15 @@
 import setuptools
-import sys
-
-if sys.version_info < (3, 6):
-    sys.exit('Python < 3.6 is not supported')
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
+
+files = ["metadata/*", "metadata/*/*", "metadata/.*/*"]
 
 setuptools.setup(
     name='fmfexporter',
     version='0.1',
     scripts=['bin/fmfexporter'],
+    python_requires='>=3.6',
     install_requires=['fmf', 'requests', 'urllib3'],
     setup_requires=['pytest-runner', 'fmf', 'requests', 'urllib3'],
     tests_require=['pytest'],
@@ -22,6 +21,7 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/rhmessagingqe/fmfexporter",
     packages=setuptools.find_packages(),
+    package_data={'fmfexporter': files},
     provides=['fmfexporter'],
     classifiers=[
         "Programming Language :: Python :: 3.6",

@@ -5,6 +5,7 @@ import fmf
 
 from fmfexporter.fmf_adapter import FMFAdapter
 from fmfexporter.adapters import *
+
 """
 Common arguments for the fmfexporter tool.
 """
@@ -24,12 +25,17 @@ class FMFExporterArgParser(object):
         # Common arguments
         adapters = FMFAdapter.get_available_adapters()
 
-        self._parser.add_argument("-p", "--path", required=True,
-                          help="FMF Tree path containing your test cases")
-        self._parser.add_argument("--tc", action="append",
-                          help="FMF Test Case filter (by name)")
-        self._parser.add_argument("--log-level", choices=['WARNING', 'INFO', 'DEBUG'], default='INFO',
-                                  help="Specify logging level to use")
+        self._parser.add_argument(
+            "-p", "--path", required=True, help="FMF Tree path containing your "
+            "test cases")
+        self._parser.add_argument(
+            "--tc", action="append", help="FMF Test Case filter (by name)")
+        self._parser.add_argument(
+            "--log-level", choices=['WARNING', 'INFO', 'DEBUG'], default='INFO',
+            help="Specify logging level to use")
+        self._parser.add_argument(
+            "--show-scheme", action='store_true', dest='show_scheme',
+            help="Show metadata scheme")
 
         # Sub-commands from available adapters
         sp = self._parser.add_subparsers(title='Adapter', help='Adapter help', dest='adapter')
