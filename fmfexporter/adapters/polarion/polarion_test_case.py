@@ -56,8 +56,7 @@ class PolarionTestCase(object):
         # TODO Discuss with team about it
         tc.verifies = fmf_testcase.requirements + fmf_testcase.defects
 
-        # TODO Need to research / discuss how to handle it
-        tc.status = ''
+        tc.status = fmf_testcase.status
 
         # Fields expected inside adapater.polarion
         if fmf_testcase.adapter and 'polarion' in fmf_testcase.adapter:
@@ -65,6 +64,8 @@ class PolarionTestCase(object):
             tc.project = polarion.get('project')
             tc.positive = 'positive' if polarion.get('positive', False) else 'negative'
             tc.automated = 'automated' if polarion.get('automated', False) else 'notautomated'
+            if tc.automated == 'automated':
+                tc.automation_script = fmf_testcase.automation_script
             tc.lookup_method = polarion.get('lookup-method', 'name')
             subtypes = polarion.get('subtypes', [])
             tc.subtype1 = subtypes[0] if len(subtypes) >= 1 else ''
@@ -110,6 +111,8 @@ class PolarionTestCase(object):
         # Tags
         tc.tags = fmf_testcase.tags
 
+        # Verifies
+        tc.verifies = fmf_testcase.verifies
         return tc
 
     class Step(object):
@@ -147,9 +150,10 @@ class PolarionTestCase(object):
         self.project = ""
         self.status = ""
         self.assignee = ""
-        self.verifies = ""
+        self.verifies = {}
         self.positive = "positive"
         self.automated = "notautomated"
+        self.automation_script = ""
         self.lookup_method = ""
         self.component = ""
         self.sub_component = ""
@@ -189,6 +193,7 @@ class PolarionTestCase(object):
             tc.set('approver-ids', ",".join([ap + ":approved" for ap in self.approvals]))
         tc.set('id', self.id)
         # tc.set('status', self.status)
+        tc.set('status-id', self.status)
 
         # testcase child elements
         # testcase/title
@@ -215,14 +220,13 @@ class PolarionTestCase(object):
         PolarionXmlUtils.new_custom_field(tc_custom, 'caseimportance', self.importance)
         PolarionXmlUtils.new_custom_field(tc_custom, 'caseposneg', self.positive)
         PolarionXmlUtils.new_custom_field(tc_custom, 'caseautomation', self.automated)
+        PolarionXmlUtils.new_custom_field(tc_custom, 'automation_script', self.automation_script)
 
-        # testcase/linked-work-items
+        # testcase/linked-work-items\
         if self.verifies:
             tc_linked = etree.SubElement(tc, 'linked-work-items')
-            for verify in [verify for verify in self.verifies if isinstance(verify, dict)]:
-                PolarionXmlUtils.new_linked_work_item(tc_linked,
-                                                      verify.get('polarion', verify.get('jira', '')),
-                                                      'verifies')
+            for workitem_id in self.verifies:
+                PolarionXmlUtils.new_linked_work_item(tc_linked, workitem_id, "verifies")
 
         # testcase/test-steps
         if self.steps:

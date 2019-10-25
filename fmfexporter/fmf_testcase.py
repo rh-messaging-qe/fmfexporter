@@ -63,6 +63,7 @@ class FMFTestCase(object):
         # Authoring and approvals
         self.authors: list = []
         self.approvals: list = []
+        self.status: str = ""
 
         # Classification
         self.type: str = ""
@@ -89,6 +90,11 @@ class FMFTestCase(object):
 
         # Test suite
         self.testsuite: FMFTestSuite = FMFTestSuite()
+
+        # Test case automation test script
+        self.automation_script = ""
+
+        self.verifies = {}
 
         # Adapter
         self.adapter: dict = {}
@@ -125,6 +131,7 @@ class FMFTestCase(object):
             # Authoring and approvals
             fmf_tc.authors = get_fmf_data(fmf_node, 'authors', [])
             fmf_tc.approvals = get_fmf_data(fmf_node, 'approvals', [])
+            fmf_tc.status = get_fmf_data(fmf_node, 'status', '')
 
             # Classification
             fmf_tc.type = get_fmf_data(fmf_node, 'type', '')
@@ -152,6 +159,11 @@ class FMFTestCase(object):
             # Test Suite parameters
             ts = get_fmf_data(fmf_node, 'testsuite', {})
             fmf_tc.testsuite = FMFTestSuite(**ts)
+
+            # Test case automation script
+            fmf_tc.automation_script = get_fmf_data(fmf_node, 'automation_script', '')
+
+            fmf_tc.verifies = get_fmf_data(fmf_node, "verifies", {})
 
             # Adapter specific info
             fmf_tc.adapter = get_fmf_data(fmf_node, 'adapter', {})

@@ -113,7 +113,7 @@ def test_polarion_fmftestcase_parser_custom_parameters(testcase):
     :return:
     """
     assert testcase.project == 'ENTMQIC'
-    assert testcase.status == ''  # TODO Need to define how to handle it
+    assert testcase.status_id == 'approved'
     assert testcase.positive == 'positive'
     assert testcase.automated == 'automated'
     assert testcase.lookup_method == 'name'
