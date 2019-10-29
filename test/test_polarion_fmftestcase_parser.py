@@ -31,7 +31,7 @@ def test_polarion_fmftestcase_parser_id(testcase):
     """
     assert testcase.id == 'test_path.some_test_class.foo_test.TestFoo.test_foo_sample_01'
     assert testcase.title == testcase.id
-    assert testcase.description == 'This is the summary\nThis is the description'
+    assert testcase.description.startswith('This is the summary\nThis is the description')
 
 
 def test_polarion_fmftestcase_parser_authoring(testcase):
