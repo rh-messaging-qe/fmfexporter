@@ -5,6 +5,7 @@ sending them to the Polarion Importer.
 
 import xml.etree.ElementTree as etree
 from typing import List
+from html import escape
 
 
 class PolarionXmlUtils(object):
@@ -70,12 +71,12 @@ class PolarionXmlUtils(object):
         # Step element
         step_elem = etree.SubElement(test_step, 'test-step-column')
         step_elem.set('id', 'step')
-        step_elem.text = step
+        step_elem.text = escape(step).replace('\n', '<br>')
 
         # Expected result element
         result_elem = etree.SubElement(test_step, 'test-step-column')
         result_elem.set('id', 'expectedResult')
-        result_elem.text = result
+        result_elem.text = escape(result).replace('\n', '<br>')
 
     @staticmethod
     def new_test_step_params(test_steps_parent: etree.Element, params: List[str], scope: str="local") -> None:
