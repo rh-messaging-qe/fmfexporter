@@ -29,7 +29,6 @@ class PolarionXmlUtils(object):
             return
         sub_elem = etree.SubElement(linked_work_item_parent, 'linked-work-item')
         sub_elem.set('workitem-id', workitem_id)
-        sub_elem.set('lookup-method', 'id')
         sub_elem.set('role-id', role_id)
 
     @staticmethod

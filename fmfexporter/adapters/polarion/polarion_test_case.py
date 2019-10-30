@@ -71,8 +71,14 @@ class PolarionTestCase(object):
         # TODO Discuss with team about it
         tc.verifies = fmf_testcase.requirements + fmf_testcase.defects
 
-        # TODO Need to research / discuss how to handle it
-        tc.status = ''
+        # Status is set to "draft" by default
+        # workflow is:
+        # - proposed if description, level and importance defined
+        # - approved if proposed conditions met, plus:
+        #   - automation_script set (when automated)
+        #   - requirement with role 'verifies' populated
+        #
+        tc.status = 'draft'
 
         # Fields expected inside adapater.polarion
         if fmf_testcase.adapter and 'polarion' in fmf_testcase.adapter:
@@ -84,6 +90,7 @@ class PolarionTestCase(object):
             subtypes = polarion.get('subtypes', [])
             tc.subtype1 = subtypes[0] if len(subtypes) >= 1 else ''
             tc.subtype2 = subtypes[1] if len(subtypes) >= 2 else ''
+            tc.automation_script = polarion.get('automation_script', polarion.get('automation-script', ''))
 
         # Component
         tc.component = ''
@@ -168,7 +175,8 @@ class PolarionTestCase(object):
         self.title = ""
         self.description = ""
         self.project = ""
-        self.status = ""
+        self.status = "draft"
+        self.automation_script = ""
         self.assignee = ""
         self.verifies = ""
         self.positive = "positive"
@@ -213,7 +221,17 @@ class PolarionTestCase(object):
         if self.approvals:
             tc.set('approver-ids', ",".join([ap + ":approved" for ap in self.approvals]))
         tc.set('id', self.id)
-        # tc.set('status', self.status)
+
+        # workflow is:
+        # - proposed if description, level and importance defined
+        # - approved if proposed conditions met, plus:
+        #   - automation_script set (when automated)
+        #   - requirement with role 'verifies' populated
+        if self.description != "" and self.level != "" and self.importance != "":
+            self.status = "proposed"
+            if len(self.verifies) > 0 and (self.automated == "notautomated" or self.automation_script != ""):
+                self.status = "approved"
+        tc.set('status-id', self.status)
 
         # testcase child elements
         # testcase/title
@@ -242,6 +260,7 @@ class PolarionTestCase(object):
         PolarionXmlUtils.new_custom_field(tc_custom, 'caseautomation', self.automated)
         PolarionXmlUtils.new_custom_field(tc_custom, 'setup', self.create_step_result_table(self.setup))
         PolarionXmlUtils.new_custom_field(tc_custom, 'teardown', self.create_step_result_table(self.teardown))
+        PolarionXmlUtils.new_custom_field(tc_custom, 'automation_script', self.automation_script)
 
         # testcase/linked-work-items
         if self.verifies:
