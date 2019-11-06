@@ -111,3 +111,19 @@ class PolarionXmlUtils(object):
         sub_elem = etree.SubElement(parent, 'property')
         sub_elem.set('name', name)
         sub_elem.set('value', value)
+
+    @staticmethod
+    def new_hyperlink_sub_element(parent: etree.Element, role_id: str, uri_link: str) -> None:
+        """
+        Creates sub-element named 'hyperlink' within the given parent.
+        It will also set attributes 'role-id' and 'uri' hyperlink as elements.
+        :param parent:
+        :param role_id:
+        :param uri_link:
+        :return:
+        """
+        if uri_link is None:
+            return
+        sub_elem = etree.SubElement(parent, 'hyperlink')
+        sub_elem.set('role-id', role_id)
+        sub_elem.set('uri', uri_link)

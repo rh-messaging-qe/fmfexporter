@@ -68,8 +68,8 @@ class PolarionTestCase(object):
                 tc.assignee = re.sub(PolarionTestCase.RE_USER_ID, r'\1', author)
 
         # Set verifies list
-        # TODO Discuss with team about it
-        tc.verifies = fmf_testcase.requirements + fmf_testcase.defects
+        tc.verifies = fmf_testcase.requirements
+        tc.defects = fmf_testcase.defects
 
         # Status is set to "draft" by default
         # workflow is:
@@ -179,6 +179,7 @@ class PolarionTestCase(object):
         self.automation_script = ""
         self.assignee = ""
         self.verifies = ""
+        self.defects = []
         self.positive = "positive"
         self.automated = "notautomated"
         self.lookup_method = ""
@@ -280,6 +281,14 @@ class PolarionTestCase(object):
 
             for step in self.steps:
                 PolarionXmlUtils.new_test_step(tc_steps, step.step, step.result)
+
+        # external links Jira, BZ
+        if self.defects:
+            tc_hyperlinks = etree.SubElement(tc, "hyperlinks")
+            for defect in self.defects:
+                for key in defect:
+                    PolarionXmlUtils.new_hyperlink_sub_element(tc_hyperlinks, "tc_customerdefect", defect[key])
+                    # PolarionXmlUtils.new_hyperlink_sub_element(tc_hyperlinks, "testscript", defect[key])
 
         xml_str = minidom.parseString(etree.tostring(xmlroot)).toprettyxml()
 
