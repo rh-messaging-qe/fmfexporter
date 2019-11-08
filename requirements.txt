@@ -1,4 +1,5 @@
 fmf
+jira
+pytest
 requests
 urllib3
-pytest
