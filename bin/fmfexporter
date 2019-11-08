@@ -54,4 +54,4 @@ if __name__ == '__main__':
         sys.exit(0)
 
     # Submitting filtered test cases
-    adapter.submit_testcase_list(tc_list)
+    adapter.submit_testcase_list(tc_list, parse_import_response=True)
