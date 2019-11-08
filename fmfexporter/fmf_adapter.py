@@ -91,7 +91,7 @@ class FMFAdapter(abc.ABC, object):
         This method is used to submit a generic FMFTestCase element
         into the external ALM related tool.
         :param fmf_testcase:
-        :return:
+        :return: submitted_testcase
         """
         raise NotImplementedError()
 
@@ -156,8 +156,10 @@ class FMFAdapter(abc.ABC, object):
         :param fmf_adapter_testcase_list:
         :return:
         """
+        test_list = []
         print("Submitting %d test cases to %s" % (len(fmf_testcase_list), self.adapter_id()))
-        self.submit_testcases(fmf_testcase_list, parse_import_response)
+        test_list.append(self.submit_testcases(fmf_testcase_list, parse_import_response))
+        return test_list
 
     @staticmethod
     def _get_name_in_tree(classname: str, testname: str):

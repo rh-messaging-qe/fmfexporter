@@ -274,6 +274,7 @@ class PolarionReporter(object):
                         import_successful = True
                     else:
                         # we need to give some time to Polarion, to import test case itself, else we'll get empty data
+                        LOGGER.debug("polling polarion answer")
                         time.sleep(0.5)
 
             out = out.replace("&#034;", "\"").splitlines()
