@@ -38,7 +38,7 @@ class FMFAdapterPolarion(FMFAdapter):
     def convert_from(self, fmf_testcase: FMFTestCase):
         return PolarionTestCase.from_fmf_testcase(fmf_testcase)
 
-    def submit_testcase(self, fmf_testcase: FMFTestCase):
+    def submit_testcase(self, fmf_testcase: FMFTestCase, parse_response=False):
         ptc = self.convert_from(fmf_testcase)
 
         #
@@ -47,6 +47,6 @@ class FMFAdapterPolarion(FMFAdapter):
         #
         if self._reporter and PolarionArgParser.SUBMIT:
             LOGGER.info("Submitting test case: %s" % ptc.id)
-            self._reporter.submit_testcase(ptc)
+            self._reporter.submit_testcase(ptc, parse_response)
         else:
             print("Dumping test case: %s\n%s\n" % (ptc.id, ptc.to_xml()))

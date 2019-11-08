@@ -86,7 +86,7 @@ class FMFAdapter(abc.ABC, object):
         raise NotImplementedError()
 
     @abc.abstractmethod
-    def submit_testcase(self, fmf_testcase: FMFTestCase):
+    def submit_testcase(self, fmf_testcase: FMFTestCase, parse_response=False):
         """
         This method is used to submit a generic FMFTestCase element
         into the external ALM related tool.
@@ -140,7 +140,7 @@ class FMFAdapter(abc.ABC, object):
             tc_list.append(self.convert_from(tc))
         return tc_list
 
-    def submit_testcase_list(self, fmf_testcase_list: list):
+    def submit_testcase_list(self, fmf_testcase_list: list, parse_import_response=False):
         """
         Submit a list of FMFAdapterTestCase objects (based on adapter's version of a test case).
         :param fmf_adapter_testcase_list:
@@ -149,7 +149,7 @@ class FMFAdapter(abc.ABC, object):
         print("Submitting %d test cases to %s" % (len(fmf_testcase_list), self.adapter_id()))
         for (idx, tc) in enumerate(fmf_testcase_list):
             print("Submitting test case %d of %d" % (idx+1, len(fmf_testcase_list)))
-            self.submit_testcase(tc)
+            self.submit_testcase(tc, parse_import_response)
 
     @staticmethod
     def _get_name_in_tree(classname: str, testname: str):
