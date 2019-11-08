@@ -196,6 +196,8 @@ class PolarionTestCase(object):
         self.subtype2 = ""
         self.parameters = []
 
+        # Generated from import job after submitting into Polarion
+        self.test_case_work_item_url = None
         # TODO future use
         self.tags = ""
         self.environment = PolarionTestCase.Environment()
