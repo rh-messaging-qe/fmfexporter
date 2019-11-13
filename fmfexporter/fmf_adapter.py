@@ -225,3 +225,6 @@ class FMFAdapterTest(FMFAdapter):
 
     def submit_testcase(self, fmf_testcase: FMFTestCase):
         pass
+
+    def submit_testcases(self, fmf_testcase: list):
+        pass
