@@ -53,9 +53,11 @@ def test_polarion_fmftestcase_parser_relationship(testcase):
     :param testcase:
     :return:
     """
-    verify_list = [{'polarion': 'ENTMQIC-1111', 'customer-case': True}, {'jira': 'ENTMQIC-2222'},
-                   {'polarion': 'ENTMQIC-3333', 'customer-case': True}, {'jira': 'ENTMQIC-4444'}]
+    defect_list = [{'polarion': 'ENTMQIC-1111', 'customer-case': True}, {'jira': 'ENTMQIC-2222'}]
+    verify_list = [{'polarion': 'ENTMQIC-3333', 'customer-case': True}, {'jira': 'ENTMQIC-4444'}]
 
+    assert all(item in testcase.defects for item in defect_list)
+    assert len(defect_list) == len(testcase.defects)
     assert all(item in testcase.verifies for item in verify_list)
     assert len(verify_list) == len(testcase.verifies)
 
