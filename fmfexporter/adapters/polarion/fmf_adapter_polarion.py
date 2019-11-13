@@ -50,3 +50,28 @@ class FMFAdapterPolarion(FMFAdapter):
             self._reporter.submit_testcase(ptc)
         else:
             print("Dumping test case: %s\n%s\n" % (ptc.id, ptc.to_xml()))
+
+    def submit_testcases(self, fmf_testcases: list):
+        polarion_test_cases = []
+        for fmf_testcase in fmf_testcases:
+            polarion_test_cases.append(self.convert_from(fmf_testcase))
+        #
+        # If config file has been parsed (and there is a reporter available)
+        # and --submit has been given, submit. Otherwise simply prints the tc.
+        #
+
+        if self._reporter and PolarionArgParser.SUBMIT:
+            if PolarionArgParser.ONE_BY_ONE:
+                for ptc in polarion_test_cases:
+                    LOGGER.info("Submitting test case: %s" % ptc.id)
+                    self._reporter.submit_testcase(ptc)
+            else:
+                for ptc in polarion_test_cases:
+                    LOGGER.info("Submitting test case: %s" % ptc.id)
+                self._reporter.submit_testcases(polarion_test_cases)
+        else:
+            if PolarionArgParser.ONE_BY_ONE:
+                for ptc in polarion_test_cases:
+                    print("Dumping test case: %s\n%s\n" % (ptc.id, ptc.to_xml()))
+            else:
+                print("Dumping test cases: \n%s\n" % (PolarionReporter.to_xml(polarion_test_cases)))
