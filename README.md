@@ -42,8 +42,7 @@ fmfexporter polarion --help
 
 ## Contributors
 
-* Fernando Giorgetti <fgiorget@redhat.com>
-* Dominik Lenoch <dlenoch@redhat.com>
+https://github.com/rh-messaging-qe/fmfexporter/graphs/contributors
 
 ## Acknowledgments
 
