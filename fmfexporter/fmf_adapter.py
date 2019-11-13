@@ -6,6 +6,7 @@ import argparse
 import fmf
 from typing import List
 
+from fmfexporter.adapters import PolarionArgParser
 from fmfexporter.fmf_testcase import FMFTestCase
 
 
@@ -95,6 +96,16 @@ class FMFAdapter(abc.ABC, object):
         """
         raise NotImplementedError()
 
+    @abc.abstractmethod
+    def submit_testcases(self, fmf_testcases: list[FMFTestCase]):
+        """
+        This method is used to submit a list of generic FMFTestCase element
+        into the external ALM related tool.
+        :param fmf_testcases:
+        :return:
+        """
+        raise NotImplementedError()
+
     @staticmethod
     def get_adapter(adapter_id: str, fmf_tree_path: str):
         """
@@ -147,9 +158,13 @@ class FMFAdapter(abc.ABC, object):
         :return:
         """
         print("Submitting %d test cases to %s" % (len(fmf_testcase_list), self.adapter_id()))
-        for (idx, tc) in enumerate(fmf_testcase_list):
-            print("Submitting test case %d of %d" % (idx+1, len(fmf_testcase_list)))
-            self.submit_testcase(tc)
+
+        if PolarionArgParser.ONE_BY_ONE:
+            for (idx, tc) in enumerate(fmf_testcase_list):
+                print("Submitting test case %d of %d" % (idx+1, len(fmf_testcase_list)))
+                self.submit_testcase(tc)
+        else:
+            self.submit_testcases(fmf_testcase_list)
 
     @staticmethod
     def _get_name_in_tree(classname: str, testname: str):

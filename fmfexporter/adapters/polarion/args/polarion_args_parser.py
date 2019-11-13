@@ -16,6 +16,7 @@ class PolarionArgParser(FMFAdapterArgParser):
     # Once configured properly, must point to the config file name
     CONFIG_FILE: str = None
     SUBMIT: bool = False
+    ONE_BY_ONE: bool = False
 
     def add_arguments(self, parser: argparse.ArgumentParser):
         """
@@ -31,6 +32,8 @@ class PolarionArgParser(FMFAdapterArgParser):
         parser.add_argument("--submit", action="store_true", default=False,
                             help="If specified, submits all matching test cases into Polarion, "
                                  "otherwise converted test cases will simply get logged.")
+        parser.add_argument("--one-by-one", action="store_true", default=False, dest='one_by_one',
+                            help="If set to true, all test cases will be send to Polarion one by one.")
 
     def parse_arguments(self, parsed_arguments: argparse.Namespace):
         """
@@ -53,6 +56,7 @@ class PolarionArgParser(FMFAdapterArgParser):
             self.generate_sample_config(parsed_arguments.generate_config)
 
         PolarionArgParser.SUBMIT = bool(parsed_arguments.submit)
+        PolarionArgParser.ONE_BY_ONE = bool(parsed_arguments.one_by_one)
 
     @staticmethod
     def generate_sample_config(config_file):
