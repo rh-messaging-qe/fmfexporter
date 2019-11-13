@@ -16,6 +16,4 @@ polarion = FMFAdapterPolarion(os.path.dirname(os.path.abspath(__file__)) + "/../
 test_cases = [tc for tc in polarion.get_testcases_matching('test_path')]
 
 # List all test case names and their content
-for tc in test_cases:
-    polarion_tc: PolarionTestCase = polarion.convert_from(tc)
-    polarion.submit_testcase(tc)
+polarion.submit_testcases(test_cases)

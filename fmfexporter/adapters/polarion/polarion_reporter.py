@@ -42,7 +42,6 @@ class PolarionReporter(object):
         :param testcase:
         :return:
         """
-
         xml = testcase.to_xml()
         LOGGER.debug(xml)
 
@@ -67,7 +66,7 @@ class PolarionReporter(object):
         else:
             self.print_job_ids(testcase, response.json())
 
-    def submit_testcases(self, testcases: list[PolarionTestCase]):
+    def submit_testcases(self, testcases: list):
         """
         Submits the given testcase instance to Polarion.
         If the given test case already exists (looking up by name as:
@@ -75,8 +74,7 @@ class PolarionReporter(object):
         :param testcases:
         :return:
         """
-
-        xml = self.to_xml(testcases)
+        xml = PolarionReporter.to_xml(testcases)
         LOGGER.debug(xml)
 
         xml_file = {'file': ('testcase.xml', xml)}
@@ -128,7 +126,8 @@ class PolarionReporter(object):
         LOGGER.info(tc_job_url)
         print(tc_job_url)
 
-    def to_xml(self, polarion_testcase_list: list[PolarionTestCase]):
+    @staticmethod
+    def to_xml(polarion_testcase_list: list):
         """
         Returns an XML representation of a Polarion TestCase based
         on current state of this instance.
