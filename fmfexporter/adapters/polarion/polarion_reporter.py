@@ -34,7 +34,6 @@ class PolarionReporter(object):
         self.config = PolarionConfig(config_file)
         self.headers = {'Accept': 'application/json'}
         self.auth = HTTPBasicAuth(self.config.username(), self.config.password())
-        self.testcase = None  # type: PolarionTestCase
 
     def submit_testcase(self, testcase: PolarionTestCase, parse_response=False):
         """
@@ -67,10 +66,9 @@ class PolarionReporter(object):
         if response.status_code != 200:
             raise Exception('Error submitting test-case to Polarion: %s' % response.content)
         else:
-            self.testcase = testcase
             import_job_urls = self.get_job_urls(testcase, response.json())
             if parse_response:
-                self.parse_import_job_data(import_job_urls)
+                self.parse_import_job_data(import_job_urls, testcase)
 
     def submit_testcases(self, testcases: list, parse_response=False):
         """
@@ -84,7 +82,7 @@ class PolarionReporter(object):
         LOGGER.debug(xml)
 
         xml_file = {'file': ('testcase.xml', xml)}
-
+        submitted_tc = []
         try:
             response: Response = requests.post(self.config.test_case_url(),
                                      auth=self.auth,
@@ -106,7 +104,8 @@ class PolarionReporter(object):
                 # self.print_job_ids(testcase, response.json())
                 import_job_urls = self.get_job_urls(testcase, response.json())
                 if parse_response:
-                    self.parse_import_job_data(import_job_urls)
+                    submitted_tc.append(self.parse_import_job_data(import_job_urls, testcase))
+        return submitted_tc
 
     def get_job_urls(self, tc: PolarionTestCase, response: dict):
         """
@@ -245,7 +244,7 @@ class PolarionReporter(object):
 
         return xml_str
 
-    def parse_import_job_data(self, import_job_urls: list):
+    def parse_import_job_data(self, import_job_urls: list, testcase):
         """
         Parse relevant part of import job output (UMB messsage reply), which contains critical data:
         test-case-id, name and status if imported test case.
@@ -285,10 +284,10 @@ class PolarionReporter(object):
                 polarion_main_url = "/".join(self.config.test_case_url().split("/")[:-2])
                 for imp_tc in msg_content_json['import-testcases']:
                     if imp_tc['status'] == "passed":
-                        tc_wi_url = "/".join([polarion_main_url, "#", "project", self.testcase.project,
+                        tc_wi_url = "/".join([polarion_main_url, "#", "project", testcase.project,
                                               "workitem?id=%s" % imp_tc['id']])
                         LOGGER.debug(tc_wi_url)
-                        self.testcase.test_case_work_item_url = tc_wi_url
+                        testcase.test_case_work_item_url = tc_wi_url
                     else:
                         raise Exception('Polarion Import error for Testcase %s %s!' % (imp_tc['name'], imp_tc['id']))
             else:

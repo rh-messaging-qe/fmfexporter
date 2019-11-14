@@ -56,7 +56,7 @@ if __name__ == '__main__':
         sys.exit(0)
 
     # Submitting filtered test cases
-    submitted_tc_list = adapter.submit_testcase_list(tc_list, parsed.jira_populate_tc)
+    submitted_tc_list = adapter.submit_testcases(tc_list, parsed.jira_populate_tc)
 
     # Linking Test Case Work items in jira
     if parsed.jira_config is not None:

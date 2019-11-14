@@ -150,17 +150,6 @@ class FMFAdapter(abc.ABC, object):
             tc_list.append(self.convert_from(tc))
         return tc_list
 
-    def submit_testcase_list(self, fmf_testcase_list: list, parse_import_response=False):
-        """
-        Submit a list of FMFAdapterTestCase objects (based on adapter's version of a test case).
-        :param fmf_adapter_testcase_list:
-        :return:
-        """
-        test_list = []
-        print("Submitting %d test cases to %s" % (len(fmf_testcase_list), self.adapter_id()))
-        test_list.append(self.submit_testcases(fmf_testcase_list, parse_import_response))
-        return test_list
-
     @staticmethod
     def _get_name_in_tree(classname: str, testname: str):
         """
