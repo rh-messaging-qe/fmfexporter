@@ -80,8 +80,7 @@ class FMFJiraPopulator(object):
                     print("Populating %s test case %s of %s (%s)" % (self.config.url + "/browse/" + defect_key,
                                                                      tc_counter, tc_list_len, tc.id))
                     issue = self.jira_login.issue(defect_key)
-
-                    list_tcwi = issue.fields.customfield_12312840
+                    list_tcwi = issue.raw.get("fields").get(self.custom_fields[self.TEST_WI])
                     if list_tcwi is None:
                         list_tcwi = [tc.test_case_work_item_url]
                     else:
