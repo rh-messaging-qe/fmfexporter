@@ -71,6 +71,7 @@ class FMFJiraPopulator(object):
         tc_list_len = len(tc_list)
         tc_counter = 1
         for tc in tc_list:  # type: PolarionTestCase
+            list_tcwi = []
             for defect in tc.defects:
                 if defect.jira != "":
                     if "http" in defect['jira']:

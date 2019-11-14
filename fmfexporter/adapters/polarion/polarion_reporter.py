@@ -48,6 +48,7 @@ class PolarionReporter(object):
         LOGGER.debug(xml)
 
         xml_file = {'file': ('testcase.xml', xml)}
+        submitted_tc = []
 
         try:
             response: Response = requests.post(self.config.test_case_url(),
@@ -66,13 +67,12 @@ class PolarionReporter(object):
         if response.status_code != 200:
             raise Exception('Error submitting test-case to Polarion: %s' % response.content)
         else:
-            import_job_urls = self.get_job_urls(testcase, response.json())
-            if parse_response:
-                self.parse_import_job_data(import_job_urls, testcase)
+            submitted_tc.extend(self.handle_response(response, [testcase], parse_response))
+        return submitted_tc
 
     def submit_testcases(self, testcases: list, parse_response=False):
         """
-        Submits the given testcase instance to Polarion.
+        Submits the given testcases instance to Polarion as ONE file.
         If the given test case already exists (looking up by name as:
         "classname"."name") it will be updated. Created otherwise.
         :param testcases:
@@ -100,14 +100,30 @@ class PolarionReporter(object):
         if response.status_code != 200:
             raise Exception('Error submitting test-case to Polarion: %s' % response.content)
         else:
-            for testcase in testcases:
-                # self.print_job_ids(testcase, response.json())
-                import_job_urls = self.get_job_urls(testcase, response.json())
-                if parse_response:
-                    submitted_tc.append(self.parse_import_job_data(import_job_urls, testcase))
+            submitted_tc.extend(self.handle_response(response, testcases, parse_response))
         return submitted_tc
 
-    def get_job_urls(self, tc: PolarionTestCase, response: dict):
+
+    def assign_imported_work_item(self, msg_content_json, testcases):
+        test_wi_map = {}
+        testcase_tuples = [(testcase.id, testcase) for testcase in testcases]
+
+        # construct http://polarion.devel.engineering.redhat.com/polarion/#/project/AMQ/workitem?id=AMQ-94
+        polarion_main_url = "/".join(self.config.test_case_url().split("/")[:-2])
+        for imp_tc in msg_content_json['import-testcases']:
+            if imp_tc['status'] == "passed":
+                for tc_tuple in testcase_tuples:
+                    if imp_tc['name'] == tc_tuple[0]:
+                        tc_wi_url = "/".join([polarion_main_url, "#", "project", tc_tuple[1].project,
+                                              "workitem?id=%s" % imp_tc['id']])
+                        LOGGER.debug(tc_wi_url)
+                        tc_tuple[1].test_case_work_item_url = tc_wi_url
+            else:
+                raise Exception('Polarion Import error for Testcase %s %s!' % (imp_tc['name'], imp_tc['id']))
+
+        return testcases
+
+    def get_job_urls(self, response: dict):
         """
         Parse response (dict) and extract "job-url" for each associated XML file.
         :param tc:
@@ -123,12 +139,10 @@ class PolarionReporter(object):
             if 'job-ids' not in response['files'][file]:
                 continue
             for j in response['files'][file]['job-ids']:
-                tc_job_url = self.get_tc_job_url(tc.id, j)
-                job_urls.append(tc_job_url)
-                self.print_tc_job_url(tc_job_url, tc.id)
+                job_urls.append(self.get_job_url(j))
         return job_urls
 
-    def get_tc_job_url(self, tc_id: str, job_id: str):
+    def get_job_url(self, job_id: str):
         """
         Create the test case id along with a statically generated URL for submitted job id.
         :param tc_id:
@@ -244,7 +258,7 @@ class PolarionReporter(object):
 
         return xml_str
 
-    def parse_import_job_data(self, import_job_urls: list, testcase):
+    def parse_import_job_data(self, import_job_url: list, testcases):
         """
         Parse relevant part of import job output (UMB messsage reply), which contains critical data:
         test-case-id, name and status if imported test case.
@@ -253,45 +267,34 @@ class PolarionReporter(object):
         :return:
         :rtype:
         """
-        for import_job_url in import_job_urls:
-            import_successful = False
-            out = None
-            while not import_successful:
-                try:
-                    response: Response = requests.get(import_job_url, auth=self.auth, verify=False)
-                except RequestException as req_ex:
-                    err_msg = "Error getting response from import job: %s" % req_ex
-                    LOGGER.error(err_msg)
-                    print(err_msg)
-                    raise req_ex
+        import_successful = False
+        out = None
+        while not import_successful:
+            try:
+                response: Response = requests.get(import_job_url, auth=self.auth, verify=False)
+            except RequestException as req_ex:
+                err_msg = "Error getting response from import job: %s" % req_ex
+                LOGGER.error(err_msg)
+                print(err_msg)
+                raise req_ex
 
-                if response.status_code != 200:
-                    raise Exception('Error getting import job data from Polarion: %s' % response.content)
-                else:
-                    out = response.content.decode("UTF-8")
-                    if "Ending import of test cases to Polarion" in out:
-                        import_successful = True
-                    else:
-                        # we need to give some time to Polarion, to import test case itself, else we'll get empty data
-                        LOGGER.debug("polling polarion answer")
-                        time.sleep(0.5)
-
-            out = out.replace("&#034;", "\"").splitlines()
-            msg_content_json = PolarionReporter.parse_message_content(out)
-
-            if msg_content_json['status'] == "passed":
-                # construct http://polarion.devel.engineering.redhat.com/polarion/#/project/AMQ/workitem?id=AMQ-94
-                polarion_main_url = "/".join(self.config.test_case_url().split("/")[:-2])
-                for imp_tc in msg_content_json['import-testcases']:
-                    if imp_tc['status'] == "passed":
-                        tc_wi_url = "/".join([polarion_main_url, "#", "project", testcase.project,
-                                              "workitem?id=%s" % imp_tc['id']])
-                        LOGGER.debug(tc_wi_url)
-                        testcase.test_case_work_item_url = tc_wi_url
-                    else:
-                        raise Exception('Polarion Import error for Testcase %s %s!' % (imp_tc['name'], imp_tc['id']))
+            if response.status_code != 200:
+                raise Exception('Error getting import job data from Polarion: %s' % response.content)
             else:
-                raise Exception('Polarion Import error for %s!' % import_job_url)
+                out = response.content.decode("UTF-8")
+                if "Ending import of test cases to Polarion" in out:
+                    import_successful = True
+                else:
+                    # we need to give some time to Polarion, to import test case itself, else we'll get empty data
+                    LOGGER.debug("polling polarion answer")
+                    time.sleep(0.5)
+
+        out = out.replace("&#034;", "\"").splitlines()
+        msg_content_json = PolarionReporter.parse_message_content(out)
+        if msg_content_json['status'] == "passed":
+            self.assign_imported_work_item(msg_content_json, testcases)
+        else:
+            raise Exception('Polarion Import error for %s!' % import_job_url)
 
     @staticmethod
     def parse_message_content(out):
@@ -315,3 +318,21 @@ class PolarionReporter(object):
             if line.startswith("}"):
                 started = False
         return json.loads(json_lines)
+
+    def handle_response(self, response, testcases, parse_response):
+        tcs = []
+        urls = self.get_job_urls(response.json())
+        if len(urls) != 1:
+            # We don't track testcase vs import job mapping (multiple import xml files).
+            # All testcases submitted by this execution are imported from 1 xml file.
+            raise RuntimeError("Error occurred when importing testcase! Multiple job urls found.")
+        else:
+            job_url = urls[0]
+
+        for testcase in testcases:
+            self.print_tc_job_url(job_url, testcase.id)
+            tcs.append(testcase)
+
+        if parse_response:
+            self.parse_import_job_data(job_url, testcases)
+        return tcs

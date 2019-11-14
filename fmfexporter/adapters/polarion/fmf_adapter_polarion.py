@@ -78,4 +78,4 @@ class FMFAdapterPolarion(FMFAdapter):
             else:
                 print("Dumping test cases: \n%s\n" % (PolarionReporter.to_xml(polarion_test_cases)))
 
-        return polarion_test_cases
+        return submitted_tc
