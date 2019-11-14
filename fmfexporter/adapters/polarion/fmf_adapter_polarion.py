@@ -53,6 +53,7 @@ class FMFAdapterPolarion(FMFAdapter):
             print("Dumping test case: %s\n%s\n" % (ptc.id, ptc.to_xml()))
 
     def submit_testcases(self, fmf_testcases: list, parse_response=False):
+        submitted_tc = []
         polarion_test_cases = []
         for fmf_testcase in fmf_testcases:
             polarion_test_cases.append(self.convert_from(fmf_testcase))
@@ -65,11 +66,11 @@ class FMFAdapterPolarion(FMFAdapter):
             if PolarionArgParser.ONE_BY_ONE:
                 for ptc in polarion_test_cases:
                     LOGGER.info("Submitting test case: %s" % ptc.id)
-                    self._reporter.submit_testcase(ptc, parse_response)
+                    submitted_tc.append(self._reporter.submit_testcase(ptc, parse_response))
             else:
                 for ptc in polarion_test_cases:
                     LOGGER.info("Submitting test case: %s" % ptc.id)
-                self._reporter.submit_testcases(polarion_test_cases, parse_response)
+                submitted_tc.extend(self._reporter.submit_testcases(polarion_test_cases, parse_response))
         else:
             if PolarionArgParser.ONE_BY_ONE:
                 for ptc in polarion_test_cases:
