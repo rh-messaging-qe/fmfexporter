@@ -67,7 +67,7 @@ class FMFJiraPopulator(object):
         if self.config.project.lower() == "entmqbr":
             self.custom_fields = FMFJiraPopulator.get_entmqbr_custom_fields()
 
-    def populate_testcases(self, tc_list):
+    def populate_testcases(self, tc_list: PolarionTestCase):
         tc_list_len = len(tc_list)
         tc_counter = 1
         for tc in tc_list:  # type: PolarionTestCase
