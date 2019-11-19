@@ -1,8 +1,6 @@
 import configparser
 import jira
 
-from fmfexporter.adapters import PolarionTestCase
-
 
 class JiraConfig(object):
     """
@@ -15,6 +13,9 @@ class JiraConfig(object):
     KEY_URL = 'url'
     KEY_USERNAME = 'username'
     KEY_PASSWORD = 'password'
+    KEY_TC_WI = "testcase_work_item"
+    KEY_QE_TC = "qe_test_coverage"
+    KEY_VER_IR = "verified_in_release"
 
     def __init__(self, config_file):
         self.config = configparser.ConfigParser()
@@ -53,6 +54,29 @@ class JiraConfig(object):
         """
         return self.config[JiraConfig.KEY_SECTION][JiraConfig.KEY_PASSWORD]
 
+    @property
+    def test_case_work_item_custom_field(self) -> str:
+        """
+        Returns the parsed jira custom field for test case work item
+        :return:
+        """
+        return self.config[JiraConfig.KEY_SECTION][JiraConfig.KEY_TC_WI]
+
+    @property
+    def qe_test_coverage_custom_field(self) -> str:
+        """
+        Returns the parsed jira custom field for qe test coverage
+        :return:
+        """
+        return self.config[JiraConfig.KEY_SECTION][JiraConfig.KEY_QE_TC]
+
+    @property
+    def verified_release_custom_field(self) -> str:
+        """
+        Returns the parsed jira custom field for verified in release
+        :return:
+        """
+        return self.config[JiraConfig.KEY_SECTION][JiraConfig.KEY_VER_IR] or None
 
 class FMFJiraPopulator(object):
     TEST_WI = 'test-work-item'
@@ -64,10 +88,8 @@ class FMFJiraPopulator(object):
         credentials = (self.config.username, self.config.password)
         self.jira_login = jira.JIRA(self.config.url,
                               basic_auth=credentials)
-        if self.config.project.lower() == "entmqbr":
-            self.custom_fields = FMFJiraPopulator.get_entmqbr_custom_fields()
 
-    def populate_testcases(self, tc_list: PolarionTestCase):
+    def populate_testcases(self, tc_list: list):
         tc_list_len = len(tc_list)
         tc_counter = 1
         for tc in tc_list:  # type: PolarionTestCase
@@ -81,28 +103,19 @@ class FMFJiraPopulator(object):
                     print("Populating %s test case %s of %s (%s)" % (self.config.url + "/browse/" + defect_key,
                                                                      tc_counter, tc_list_len, tc.id))
                     issue = self.jira_login.issue(defect_key)
-                    list_tcwi = issue.raw.get("fields").get(self.custom_fields[self.TEST_WI])
+                    list_tcwi = issue.raw.get("fields").get(self.config.test_case_work_item_custom_field)
                     if list_tcwi is None:
                         list_tcwi = [tc.test_case_work_item_url]
                     else:
                         list_tcwi.append(tc.test_case_work_item_url)
 
                     updated_fields = {
-                        self.custom_fields[self.TEST_WI]: ",".join(list_tcwi), # append more links
-                        self.custom_fields[self.QE_TEST_COV]: {"value": "+"},
-                        self.custom_fields[self.VERIFIED_IN_REL]: [{"value": "Verified in a release"}],
+                        self.config.test_case_work_item_custom_field: ",".join(list_tcwi),
+                        self.config.qe_test_coverage_custom_field: {"value": "+"},
                     }
+                    if self.config.verified_release_custom_field:
+                        updated_fields[self.config.verified_release_custom_field] = [{"value": "Verified in a release"}]
 
                     issue.update(fields=updated_fields)
             tc_counter += 1
 
-    @staticmethod
-    def get_entmqbr_custom_fields():
-        return {
-            # Test Work Item        'customfield_12312840' [str]
-            FMFJiraPopulator.TEST_WI: 'customfield_12312840',
-            # QE Test Coverage      'customfield_12312848': +:11656, -:11657, ?: 11658,
-            FMFJiraPopulator.QE_TEST_COV: 'customfield_12312848',
-            # Verified in release:  'customfield_12315440'
-            FMFJiraPopulator.VERIFIED_IN_REL: 'customfield_12315440',
-        }

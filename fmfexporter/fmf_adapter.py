@@ -86,17 +86,17 @@ class FMFAdapter(abc.ABC, object):
         raise NotImplementedError()
 
     @abc.abstractmethod
-    def submit_testcase(self, fmf_testcase: FMFTestCase, parse_response=False):
+    def submit_testcase(self, fmf_testcase: FMFTestCase):
         """
         This method is used to submit a generic FMFTestCase element
         into the external ALM related tool.
         :param fmf_testcase:
-        :return: submitted_testcase
+        :return:
         """
         raise NotImplementedError()
 
     @abc.abstractmethod
-    def submit_testcases(self, fmf_testcases: list, parse_response=False):
+    def submit_testcases(self, fmf_testcases: list):
         """
         This method is used to submit a list of generic FMFTestCase element
         into the external ALM related tool.

@@ -17,6 +17,8 @@ class PolarionArgParser(FMFAdapterArgParser):
     CONFIG_FILE: str = None
     SUBMIT: bool = False
     ONE_BY_ONE: bool = False
+    JIRA_CONFIG: str = None
+    POPUL_TC: bool = False
 
     def add_arguments(self, parser: argparse.ArgumentParser):
         """
@@ -61,6 +63,8 @@ class PolarionArgParser(FMFAdapterArgParser):
 
         PolarionArgParser.SUBMIT = bool(parsed_arguments.submit)
         PolarionArgParser.ONE_BY_ONE = bool(parsed_arguments.one_by_one)
+        PolarionArgParser.POPUL_TC = bool(parsed_arguments.jira_populate_tc)
+        PolarionArgParser.JIRA_CONFIG = parsed_arguments.jira_config
 
     @staticmethod
     def generate_sample_config(config_file):
