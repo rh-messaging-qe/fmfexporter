@@ -56,12 +56,5 @@ if __name__ == '__main__':
         sys.exit(0)
 
     # Submitting filtered test cases
-    submitted_tc_list = adapter.submit_testcases(tc_list, parsed.jira_populate_tc)
-
-    # Linking Test Case Work items in jira
-    if parsed.jira_config is not None:
-        jira_pop = FMFJiraPopulator(parsed.jira_config)
-        jira_pop.populate_testcases(submitted_tc_list)
-    else:
-        LOGGER.warning("Jira configuration not provided")
+    adapter.submit_testcases(tc_list)
 

@@ -2,6 +2,7 @@ import logging
 
 from fmfexporter.adapters.polarion.args.polarion_args_parser import PolarionArgParser
 from fmfexporter import FMFTestCase
+from fmfexporter.adapters.polarion.connectors.jira.fmf_jira import FMFJiraPopulator
 from fmfexporter.adapters.polarion.polarion_reporter import PolarionReporter
 from fmfexporter.adapters.polarion.polarion_test_case import PolarionTestCase
 from fmfexporter.fmf_adapter import FMFAdapter, FMFAdapterArgParser
@@ -38,7 +39,7 @@ class FMFAdapterPolarion(FMFAdapter):
     def convert_from(self, fmf_testcase: FMFTestCase):
         return PolarionTestCase.from_fmf_testcase(fmf_testcase)
 
-    def submit_testcase(self, fmf_testcase: FMFTestCase, parse_response=False):
+    def submit_testcase(self, fmf_testcase: FMFTestCase):
         ptc = self.convert_from(fmf_testcase)
 
         #
@@ -47,12 +48,13 @@ class FMFAdapterPolarion(FMFAdapter):
         #
         if self._reporter and PolarionArgParser.SUBMIT:
             LOGGER.info("Submitting test case: %s" % ptc.id)
-            self._reporter.submit_testcase(ptc, parse_response)
+            tc = self._reporter.submit_testcase(ptc, PolarionArgParser.POPUL_TC)
+            self.populate_jira(tc)
             return ptc
         else:
             print("Dumping test case: %s\n%s\n" % (ptc.id, ptc.to_xml()))
 
-    def submit_testcases(self, fmf_testcases: list, parse_response=False):
+    def submit_testcases(self, fmf_testcases: list):
         submitted_tc = []
         polarion_test_cases = []
         for fmf_testcase in fmf_testcases:
@@ -66,11 +68,11 @@ class FMFAdapterPolarion(FMFAdapter):
             if PolarionArgParser.ONE_BY_ONE:
                 for ptc in polarion_test_cases:
                     LOGGER.info("Submitting test case: %s" % ptc.id)
-                    submitted_tc.append(self._reporter.submit_testcase(ptc, parse_response))
+                    submitted_tc.append(self._reporter.submit_testcase(ptc, PolarionArgParser.POPUL_TC))
             else:
                 for ptc in polarion_test_cases:
                     LOGGER.info("Submitting test case: %s" % ptc.id)
-                submitted_tc.extend(self._reporter.submit_testcases(polarion_test_cases, parse_response))
+                submitted_tc.extend(self._reporter.submit_testcases(polarion_test_cases, PolarionArgParser.POPUL_TC))
         else:
             if PolarionArgParser.ONE_BY_ONE:
                 for ptc in polarion_test_cases:
@@ -78,4 +80,12 @@ class FMFAdapterPolarion(FMFAdapter):
             else:
                 print("Dumping test cases: \n%s\n" % (PolarionReporter.to_xml(polarion_test_cases)))
 
-        return submitted_tc
+        self.populate_jira(submitted_tc)
+
+    def populate_jira(self, submitted_testcases: list):
+        # Linking Test Case Work items in jira
+        if PolarionArgParser.JIRA_CONFIG is not None:
+            jira_pop = FMFJiraPopulator(PolarionArgParser.JIRA_CONFIG)
+            jira_pop.populate_testcases(submitted_testcases)
+        else:
+            LOGGER.warning("Jira configuration not provided")
