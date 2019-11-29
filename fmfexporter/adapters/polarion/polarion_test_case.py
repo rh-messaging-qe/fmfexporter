@@ -264,6 +264,7 @@ class PolarionTestCase(object):
         PolarionXmlUtils.new_custom_field(tc_custom, 'setup', self.create_step_result_table(self.setup))
         PolarionXmlUtils.new_custom_field(tc_custom, 'teardown', self.create_step_result_table(self.teardown))
         PolarionXmlUtils.new_custom_field(tc_custom, 'automation_script', self.automation_script)
+        PolarionXmlUtils.new_custom_field(tc_custom, 'customerscenario', str(self.is_customer_scenario))
 
         # testcase/linked-work-items
         if self.verifies:
@@ -319,3 +320,17 @@ class PolarionTestCase(object):
         setup_content += '</tbody></table>'
 
         return setup_content
+
+    @property
+    def is_customer_scenario(self):
+        """
+        Whether this test case is customer scenario or not.
+        :return: customer scenario boolean flag
+        :rtype: Bool
+        """
+        for verify_item in self.verifies:
+            if isinstance(verify_item, dict):
+                for key in verify_item:
+                    if key == "customer-scenario":
+                        return verify_item[key]
+        return False
