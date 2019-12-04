@@ -10,7 +10,7 @@ setuptools.setup(
     version='0.1',
     scripts=['bin/fmfexporter'],
     python_requires='>=3.6',
-    install_requires=['fmf', 'requests', 'urllib3'],
+    install_requires=['fmf', 'requests', 'jira', 'urllib3'],
     setup_requires=['pytest-runner', 'fmf', 'requests', 'urllib3'],
     tests_require=['pytest'],
     author="Fernando Giorgetti, Dominik Lenoch",
