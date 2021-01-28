@@ -14,7 +14,7 @@ setuptools.setup(
     setup_requires=['pytest-runner', 'fmf', 'requests', 'urllib3'],
     tests_require=['pytest'],
     author="Fernando Giorgetti, Dominik Lenoch",
-    author_email="fgiorget@redhatcom, dlenoch@redhat.com",
+    author_email="fgiorget@redhat.com, dlenoch@redhat.com",
     license="Apache-2.0",
     description="Flexible Metadata Format test-case exporter tool",
     long_description=long_description,
