@@ -32,6 +32,7 @@ class FMFExporterArgParser(object):
             "--tc", action="append", help="FMF Test Case filter (by name)")
         self._parser.add_argument(
             "--log-level", choices=['WARNING', 'INFO', 'DEBUG'], default='INFO',
+            # action='store_true', dest='log_level',
             help="Specify logging level to use")
         self._parser.add_argument(
             "--show-scheme", action='store_true', dest='show_scheme',
