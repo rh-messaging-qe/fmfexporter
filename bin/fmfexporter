@@ -29,9 +29,8 @@ if __name__ == '__main__':
     parsed = argparser.parse_args()
 
     # Initialize logging
-    logging.basicConfig(filename="fmfexporter.log",
-                        level=logging.getLevelName(parsed.log_level),
-                        format='%(asctime)s [%(levelname)s] (%(pathname)s:%(lineno)s) - %(message)s')
+    logging.basicConfig(level=logging.getLevelName(parsed.log_level),
+                        format='%(asctime)s [%(levelname)s] (%(name)s:%(lineno)s) - %(message)s')
 
     # Filtering FMF Tree according to common arguments
     adapter: FMFAdapter = argparser.adapter

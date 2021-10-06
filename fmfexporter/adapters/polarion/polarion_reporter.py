@@ -59,12 +59,11 @@ class PolarionReporter(object):
         except RequestException as req_ex:
             err_msg = "Error submitting test case: %s" % req_ex
             LOGGER.error(err_msg)
-            print(err_msg)
             raise req_ex
 
         LOGGER.debug("HTTP Response [Code: %s]: %s" % (response.status_code, response.content))
 
-        if response.status_code != 200:
+        if response.status_code != 200 or "Project id not specified or invalid" in response.content.decode('utf-8'):
             raise Exception('Error submitting test-case to Polarion: %s' % response.content)
         else:
             submitted_tc.extend(self.handle_response(response, [testcase], parse_response))
@@ -92,12 +91,11 @@ class PolarionReporter(object):
         except RequestException as req_ex:
             err_msg = "Error submitting test case: %s" % req_ex
             LOGGER.error(err_msg)
-            print(err_msg)
             raise req_ex
 
         LOGGER.debug("HTTP Response [Code: %s]: %s" % (response.status_code, response.content))
 
-        if response.status_code != 200:
+        if response.status_code != 200 or "Project id not specified or invalid" in response.content.decode('utf-8'):
             raise Exception('Error submitting test-case to Polarion: %s' % response.content)
         else:
             submitted_tc.extend(self.handle_response(response, testcases, parse_response))
@@ -152,15 +150,15 @@ class PolarionReporter(object):
         tc_job_url = "%s-log?jobId=%s" % (self.config.test_case_url(), job_id)
         return tc_job_url
 
-    def print_tc_job_url(self, tc_job_url: str, tc_id: str):
+    def print_tc_job_urls(self, tc_job_urls: list):
         """
         Print the statically generated URL for submitted job id.
         :param tc_job_url:
         :param tc_id:
         """
-        tc_job_url = "%s (ID: %s)" % (tc_job_url, tc_id)
-        LOGGER.info(tc_job_url)
-        print(tc_job_url)
+        for url in tc_job_urls:
+            tc_job_url = "Reporting job url: %s" % (url)
+            LOGGER.info(tc_job_url)
 
     @staticmethod
     def to_xml(polarion_testcase_list: list):
@@ -276,10 +274,9 @@ class PolarionReporter(object):
             except RequestException as req_ex:
                 err_msg = "Error getting response from import job: %s" % req_ex
                 LOGGER.error(err_msg)
-                print(err_msg)
                 raise req_ex
 
-            if response.status_code != 200:
+            if response.status_code != 200 or "Project id not specified or invalid" in response.content.decode('utf-8'):
                 raise Exception('Error getting import job data from Polarion: %s' % response.content)
             else:
                 out = response.content.decode("UTF-8")
@@ -327,13 +324,12 @@ class PolarionReporter(object):
             # We don't track testcase vs import job mapping (multiple import xml files).
             # All testcases submitted by this execution are imported from 1 xml file.
             raise RuntimeError("Error occurred when importing testcase! Multiple job urls found.")
-        else:
-            job_url = urls[0]
 
         for testcase in testcases:
-            self.print_tc_job_url(job_url, testcase.id)
             tcs.append(testcase)
 
+        self.print_tc_job_urls(urls)
+
         if parse_response:
-            self.parse_import_job_data(job_url, testcases)
+            self.parse_import_job_data(urls, testcases)
         return tcs
