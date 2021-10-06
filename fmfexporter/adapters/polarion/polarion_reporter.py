@@ -157,7 +157,7 @@ class PolarionReporter(object):
         :param tc_id:
         """
         for url in tc_job_urls:
-            tc_job_url = "%s" % (url)
+            tc_job_url = "Reporting job url: %s" % (url)
             LOGGER.info(tc_job_url)
 
     @staticmethod
