@@ -92,12 +92,11 @@ class PolarionReporter(object):
         except RequestException as req_ex:
             err_msg = "Error submitting test case: %s" % req_ex
             LOGGER.error(err_msg)
-            print(err_msg)
             raise req_ex
 
         LOGGER.debug("HTTP Response [Code: %s]: %s" % (response.status_code, response.content))
 
-        if response.status_code != 200:
+        if response.status_code != 200 or "Project id not specified or invalid" in response.content:
             raise Exception('Error submitting test-case to Polarion: %s' % response.content)
         else:
             submitted_tc.extend(self.handle_response(response, testcases, parse_response))
