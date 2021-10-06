@@ -59,7 +59,6 @@ class PolarionReporter(object):
         except RequestException as req_ex:
             err_msg = "Error submitting test case: %s" % req_ex
             LOGGER.error(err_msg)
-            print(err_msg)
             raise req_ex
 
         LOGGER.debug("HTTP Response [Code: %s]: %s" % (response.status_code, response.content))
@@ -159,7 +158,6 @@ class PolarionReporter(object):
         """
         tc_job_url = "%s (ID: %s)" % (tc_job_url, tc_id)
         LOGGER.info(tc_job_url)
-        print(tc_job_url)
 
     @staticmethod
     def to_xml(polarion_testcase_list: list):
@@ -275,7 +273,6 @@ class PolarionReporter(object):
             except RequestException as req_ex:
                 err_msg = "Error getting response from import job: %s" % req_ex
                 LOGGER.error(err_msg)
-                print(err_msg)
                 raise req_ex
 
             if response.status_code != 200 or "Project id not specified or invalid" in response.content.decode('utf-8'):

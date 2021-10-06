@@ -30,7 +30,7 @@ if __name__ == '__main__':
 
     # Initialize logging
     logging.basicConfig(level=logging.getLevelName(parsed.log_level),
-                        format='%(asctime)s [%(levelname)s] (%(pathname)s:%(lineno)s) - %(message)s')
+                        format='%(asctime)s [%(levelname)s] (%(name)s:%(lineno)s) - %(message)s')
 
     # Filtering FMF Tree according to common arguments
     adapter: FMFAdapter = argparser.adapter
