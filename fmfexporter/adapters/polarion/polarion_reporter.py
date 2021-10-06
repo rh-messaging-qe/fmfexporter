@@ -64,7 +64,7 @@ class PolarionReporter(object):
 
         LOGGER.debug("HTTP Response [Code: %s]: %s" % (response.status_code, response.content))
 
-        if response.status_code != 200:
+        if response.status_code != 200 or "Project id not specified or invalid" in response.content.decode('utf-8'):
             raise Exception('Error submitting test-case to Polarion: %s' % response.content)
         else:
             submitted_tc.extend(self.handle_response(response, [testcase], parse_response))
@@ -96,7 +96,7 @@ class PolarionReporter(object):
 
         LOGGER.debug("HTTP Response [Code: %s]: %s" % (response.status_code, response.content))
 
-        if response.status_code != 200 or "Project id not specified or invalid" in response.content:
+        if response.status_code != 200 or "Project id not specified or invalid" in response.content.decode('utf-8'):
             raise Exception('Error submitting test-case to Polarion: %s' % response.content)
         else:
             submitted_tc.extend(self.handle_response(response, testcases, parse_response))
@@ -278,7 +278,7 @@ class PolarionReporter(object):
                 print(err_msg)
                 raise req_ex
 
-            if response.status_code != 200:
+            if response.status_code != 200 or "Project id not specified or invalid" in response.content.decode('utf-8'):
                 raise Exception('Error getting import job data from Polarion: %s' % response.content)
             else:
                 out = response.content.decode("UTF-8")
