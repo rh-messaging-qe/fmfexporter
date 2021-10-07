@@ -272,7 +272,10 @@ class PolarionReporter(object):
         """
         import_successful = False
         out = None
-        while not import_successful:
+        max_attempts = 120
+        attempt = 0
+        while not import_successful and attempt < max_attempts:
+            attempt += 1
             try:
                 response: Response = requests.get(import_job_url, auth=self.auth, verify=False)
             except RequestException as req_ex:
@@ -284,12 +287,14 @@ class PolarionReporter(object):
                 raise Exception('Error getting import job data from Polarion: %s' % response.content)
             else:
                 out = response.content.decode("UTF-8")
-                if "Ending import of test cases to Polarion" in out:
+                if "Ending import of test cases to Polarion" in out and "Rolling back test case import due to earlier errors" not in out:
                     import_successful = True
                 else:
                     # we need to give some time to Polarion, to import test case itself, else we'll get empty data
-                    LOGGER.debug("polling polarion answer")
-                    time.sleep(0.5)
+                    LOGGER.debug("import data not yet available - attempt %d/%d" % (attempt, max_attempts))
+                    if attempt == max_attempts:
+                        break
+                    time.sleep(2)
 
         out = out.replace("&#034;", "\"").splitlines()
         msg_content_json = PolarionReporter.parse_message_content(out)
@@ -336,4 +341,7 @@ class PolarionReporter(object):
 
         if parse_response:
             self.parse_import_job_data(urls, testcases)
+
+
+
         return tcs
