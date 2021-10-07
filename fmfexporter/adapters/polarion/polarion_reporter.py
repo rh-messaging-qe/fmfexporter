@@ -45,7 +45,6 @@ class PolarionReporter(object):
         :return:
         """
         xml = testcase.to_xml()
-        LOGGER.debug(xml)
 
         xml_file = {'file': ('testcase.xml', xml)}
         submitted_tc = []
@@ -78,7 +77,6 @@ class PolarionReporter(object):
         :return:
         """
         xml = PolarionReporter.to_xml(testcases)
-        LOGGER.debug(xml)
 
         xml_file = {'file': ('testcase.xml', xml)}
         submitted_tc = []

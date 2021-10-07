@@ -295,6 +295,10 @@ class PolarionTestCase(object):
 
         xml_str = minidom.parseString(etree.tostring(xmlroot)).toprettyxml()
 
+        with open("testcase.xml", 'w') as out_file:
+            out_file.write(xml_str)
+            out_file.close()
+
         return xml_str
 
     def create_step_result_table(self, steps):
