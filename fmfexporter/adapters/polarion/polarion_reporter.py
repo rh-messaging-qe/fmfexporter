@@ -253,6 +253,12 @@ class PolarionReporter(object):
 
         xml_str = minidom.parseString(etree.tostring(xmlroot)).toprettyxml()
 
+        output_file_name = "testcase.xml"
+        LOGGER.info("Generated: %s", output_file_name)
+        with open(output_file_name, 'w') as out_file:
+            out_file.write(xml_str)
+            out_file.close()
+
         return xml_str
 
     def parse_import_job_data(self, import_job_url: list, testcases):
