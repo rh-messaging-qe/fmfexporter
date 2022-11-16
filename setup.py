@@ -7,7 +7,7 @@ files = ["metadata/*", "metadata/*/*", "metadata/.*/*"]
 
 setuptools.setup(
     name='fmfexporter',
-    version='0.1',
+    version='0.2',
     scripts=['bin/fmfexporter'],
     python_requires='>=3.6',
     install_requires=['fmf', 'requests', 'jira', 'urllib3'],
