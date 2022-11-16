@@ -223,6 +223,8 @@ class PolarionReporter(object):
             PolarionXmlUtils.new_custom_field(tc_custom, 'teardown', ptc.create_step_result_table(ptc.teardown))
             PolarionXmlUtils.new_custom_field(tc_custom, 'automation_script', ptc.automation_script)
             PolarionXmlUtils.new_custom_field(tc_custom, 'customerscenario', str(ptc.is_customer_scenario))
+            if ptc.tags:
+                PolarionXmlUtils.new_custom_field(tc_custom, 'tags', ', '.join(ptc.tags))
 
             # testcase/linked-work-items
             if ptc.verifies:
